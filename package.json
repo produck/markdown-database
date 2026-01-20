@@ -1,5 +1,5 @@
 {
-	"name": "@produck/markdown-storage-workspace",
+	"name": "@produck/cellulose-workspace",
 	"private": true,
 	"scripts": {
 		"deps:install": "npm -v && npm install",
@@ -20,6 +20,6 @@
 		"typescript-eslint": "^8.52.0"
 	},
 	"workspaces": [
-		"packages/markdown-storage"
+		"packages/directory"
 	]
 }
