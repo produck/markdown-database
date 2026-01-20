@@ -33,8 +33,16 @@ class TestDirectory extends AbstractDirectory {
 		return 'PlainObject';
 	}
 
-	[_I.DATA.IS_VALID]() {
-		return true;
+	[_I.DATA.IS_VALID](value) {
+		return value !== 'bad';
+	}
+
+	static get [_S.MODEL.NAME]() {
+		return 'foo';
+	}
+
+	static get [_S.MODEL.DATA]() {
+		return 'bar';
 	}
 }
 
@@ -54,6 +62,15 @@ describe('::Directory()', () => {
 
 		it('should get false.', () => {
 			assert.equal(TestDirectory.isDirectory(null), false);
+		});
+	});
+
+	describe('::model', () => {
+		it('should get model.', () => {
+			assert.deepEqual(TestDirectory.model, {
+				name: 'foo',
+				data: 'bar',
+			});
 		});
 	});
 
@@ -124,6 +141,15 @@ describe('::Directory()', () => {
 			assert.notEqual(directory.data, 'bar');
 			directory.data = 'bar';
 			assert.equal(directory.data, 'bar');
+		});
+
+		it('should throw if set bad data.', () => {
+			const directory = new TestDirectory();
+
+			assert.throws(() => directory.data = 'bad', {
+				name: 'TypeError',
+				message: 'Invalid "assigned value", one "PlainObject" expected.',
+			});
 		});
 	});
 

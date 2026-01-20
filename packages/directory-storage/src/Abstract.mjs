@@ -1,6 +1,7 @@
 import Abstract, { Member as M } from '@produck/es-abstract';
 
 import { ACTION } from './Symbol.mjs';
+import * as Throw from './Throw.mjs';
 
 const I = {
 	TARGET_CONSTRUCTOR: Symbol('.#targetConstructor'),
@@ -44,10 +45,6 @@ export const _S = {
 	},
 };
 
-function ThrowTypeError(role, expected) {
-	throw new TypeError(`Invalid "${role}", one "${expected}" expected.`);
-}
-
 export default Abstract(class Directory {
 	[I.TARGET_CONSTRUCTOR] = Directory;
 
@@ -57,19 +54,19 @@ export default Abstract(class Directory {
 
 	[I.ASSERT.DIRECTORY](value, role) {
 		if (!(value instanceof this[I.TARGET_CONSTRUCTOR])) {
-			ThrowTypeError(role, 'Directory');
+			Throw.TypeError(role, 'Directory');
 		}
 	}
 
 	[I.ASSERT.NAME](value, role) {
 		if (!this[_I.NAME.IS_VALID](value)) {
-			ThrowTypeError(role, this[_I.NAME.DESCRIPTION]);
+			Throw.TypeError(role, this[_I.NAME.DESCRIPTION]);
 		}
 	}
 
 	[I.ASSERT.DATA](value, role) {
 		if (!this[_I.DATA.IS_VALID](value)) {
-			ThrowTypeError(role, this[_I.DATA.DESCRIPTION]);
+			Throw.TypeError(role, this[_I.DATA.DESCRIPTION]);
 		}
 	}
 
