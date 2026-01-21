@@ -5,29 +5,25 @@ export namespace ACTION {
 
 type ActionSymbol = typeof ACTION.ENTER | typeof ACTION.LEAVE;
 
-export interface DirectoryStep<DIR extends ImplementedDirectory> {
+export interface DirectoryStep<DIR extends Directory> {
 	directory: DIR;
 	action: ActionSymbol;
 }
 
-export interface ImplementedDirectory<N = unknown, D = unknown> {
-	readonly parent: ImplementedDirectory<N, D> | null;
+export interface Directory<N = unknown, D = unknown> {
+	readonly parent: Directory<N, D> | null;
 	name: N;
 	data: D;
 
 	hasChild(name: N): boolean;
 
-	appendChild(
-		directory: ImplementedDirectory<N, D>,
-	): ImplementedDirectory<N, D>;
+	appendChild(directory: Directory<N, D>): Directory<N, D>;
 
-	removeChild(
-		directory: ImplementedDirectory<N, D>,
-	): ImplementedDirectory<D, D>;
+	removeChild(directory: Directory<N, D>): Directory<D, D>;
 
-	children(): Generator<ImplementedDirectory<N, D>>;
+	children(): Generator<Directory<N, D>>;
 
-	directories(): Generator<DirectoryStep<ImplementedDirectory<N, D>>>;
+	directories(): Generator<DirectoryStep<Directory<N, D>>>;
 }
 
 export interface DirectoryModel {
@@ -35,8 +31,8 @@ export interface DirectoryModel {
 	data: string;
 }
 
-export interface ImplementedDirectoryConstructor<N = unknown, D = unknown> {
-	new (): ImplementedDirectory<N, D>;
+export interface DirectoryConstructor<N = unknown, D = unknown> {
+	new (): Directory<N, D>;
 }
 
 export interface ImplementOptionsName<N = unknown> {
@@ -56,7 +52,7 @@ export interface ImplementOptionsData<D = unknown> {
 
 export interface ImplementOptions<
 	ION extends ImplementOptionsName,
-	IOD extends ImplementOptionsData
+	IOD extends ImplementOptionsData,
 > {
 	name: ION;
 	data: IOD;
@@ -64,10 +60,9 @@ export interface ImplementOptions<
 
 export function Implement<
 	ION extends ImplementOptionsName,
-	IOD extends ImplementOptionsData
+	IOD extends ImplementOptionsData,
 >(
 	options: ImplementOptions<ION, IOD>,
-): ImplementedDirectoryConstructor<
-	ReturnType<ION['init']>,
-	ReturnType<IOD['init']>
->;
+): DirectoryConstructor<ReturnType<ION['init']>, ReturnType<IOD['init']>>;
+
+export const AbstractDirectory: DirectoryConstructor;

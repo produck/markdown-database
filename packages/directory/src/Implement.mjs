@@ -1,3 +1,4 @@
+import { SubConstructorProxy as SCP } from '@produck/es-abstract-token';
 import AbstractDirectory, { _I, _S } from './Abstract.mjs';
 
 import * as Throw from './Throw.mjs';
@@ -119,7 +120,7 @@ function normalizeOptions(options) {
 export function Implement(options) {
 	const _options = normalizeOptions(options);
 
-	return class ImplementedDirectory extends AbstractDirectory {
+	return SCP(class ImplementedDirectory extends AbstractDirectory {
 		[_I.NAME.INIT]() {
 			return _options.name.init();
 		}
@@ -159,5 +160,5 @@ export function Implement(options) {
 		static get [_S.MODEL.DATA]() {
 			return _options.data.model;
 		}
-	};
+	});
 }
