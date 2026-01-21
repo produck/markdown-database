@@ -1,0 +1,30 @@
+{
+	"name": "@produck/cellulose-provider",
+	"version": "1.0.0",
+	"description": "",
+	"license": "MIT",
+	"author": "ChaosLee",
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"main": "src/index.mjs",
+	"types": "index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"import": "./src/index.mjs"
+		}
+	},
+	"files": [
+		"src",
+		"index.d.ts"
+	],
+	"scripts": {
+		"test": "node ./test/index.mjs",
+		"test:only": "node --test-only ./test/index.mjs"
+	},
+	"dependencies": {
+		"@produck/es-abstract": "^0.2.0"
+	}
+}
