@@ -25,6 +25,6 @@
 		"test:only": "node --test-only ./test/index.mjs"
 	},
 	"dependencies": {
-		"@produck/es-abstract": "^0.2.0"
+		"@produck/es-abstract": "^0.3.0"
 	}
 }

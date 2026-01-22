@@ -1,4 +1,4 @@
-import { SubConstructorProxy as SCP } from '@produck/es-abstract-token';
+import { SubConstructorProxy as SCP } from '@produck/es-abstract';
 import AbstractDirectory, { _I, _S } from './Abstract.mjs';
 
 import * as Throw from './Throw.mjs';

@@ -79,7 +79,7 @@ describe('::Directory()', () => {
 			assert.equal(new TestDirectory().parent, null);
 		});
 
-		it('should get its parent.', () => {
+		it.only('should get its parent.', () => {
 			const parent = new TestDirectory();
 			const directory = new TestDirectory();
 
