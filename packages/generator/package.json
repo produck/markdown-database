@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"@produck/cellulose-directory": "*",
-		"@produck/es-abstract": "^0.3.0"
+		"@produck/es-abstract": "^0.3.0",
+		"@produck/type-error": "^0.1.1"
 	}
 }
