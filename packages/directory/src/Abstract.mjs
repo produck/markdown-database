@@ -1,7 +1,7 @@
+import { ThrowTypeError } from '@produck/type-error';
 import Abstract, { Member as M } from '@produck/es-abstract';
 
 import { ACTION } from './Symbol.mjs';
-import * as Throw from './Throw.mjs';
 
 const I = {
 	TARGET_CONSTRUCTOR: Symbol('.#targetConstructor'),
@@ -54,19 +54,19 @@ export default Abstract(class Directory {
 
 	[I.ASSERT.DIRECTORY](value, role) {
 		if (!(value instanceof this[I.TARGET_CONSTRUCTOR])) {
-			Throw.TypeError(role, 'Directory');
+			ThrowTypeError(role, 'Directory');
 		}
 	}
 
 	[I.ASSERT.NAME](value, role) {
 		if (!this[_I.NAME.IS_VALID](value)) {
-			Throw.TypeError(role, this[_I.NAME.DESCRIPTION]);
+			ThrowTypeError(role, this[_I.NAME.DESCRIPTION]);
 		}
 	}
 
 	[I.ASSERT.DATA](value, role) {
 		if (!this[_I.DATA.IS_VALID](value)) {
-			Throw.TypeError(role, this[_I.DATA.DESCRIPTION]);
+			ThrowTypeError(role, this[_I.DATA.DESCRIPTION]);
 		}
 	}
 

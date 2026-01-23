@@ -1,7 +1,7 @@
+import { ThrowTypeError } from '@produck/type-error';
 import { SubConstructorProxy as SCP } from '@produck/es-abstract';
-import AbstractDirectory, { _I, _S } from './Abstract.mjs';
 
-import * as Throw from './Throw.mjs';
+import AbstractDirectory, { _I, _S } from './Abstract.mjs';
 
 function isPlainObject(value) {
 	if (typeof value !== 'object' || value === null) {
@@ -38,40 +38,40 @@ function normalizeOptions(options) {
 			if (typeof _model === 'string') {
 				name.model = _model;
 			} else {
-				Throw.TypeError('args[0].name.model', 'string');
+				ThrowTypeError('args[0].name.model', 'string');
 			}
 
 			if (typeof _init === 'function') {
 				name.init = _init;
 			} else {
-				Throw.TypeError('args[0].name.init', 'function');
+				ThrowTypeError('args[0].name.init', 'function');
 			}
 
 			if (typeof _description === 'string') {
 				name.description = _description;
 			} else {
-				Throw.TypeError('args[0].name.description', 'string');
+				ThrowTypeError('args[0].name.description', 'string');
 			}
 
 			if (typeof _isValid === 'function') {
 				name.isValid = _isValid;
 			} else {
-				Throw.TypeError('args[0].name.isValid', 'function');
+				ThrowTypeError('args[0].name.isValid', 'function');
 			}
 
 			if (typeof _equal === 'function') {
 				name.equal = _equal;
 			} else {
-				Throw.TypeError('args[0].name.equal', 'function');
+				ThrowTypeError('args[0].name.equal', 'function');
 			}
 
 			if (typeof _toString === 'function') {
 				name.toString = _toString;
 			} else {
-				Throw.TypeError('args[0].name.toString', 'function');
+				ThrowTypeError('args[0].name.toString', 'function');
 			}
 		} else {
-			Throw.TypeError('args[0].name', 'plain object');
+			ThrowTypeError('args[0].name', 'plain object');
 		}
 
 		if (isPlainObject(_data)) {
@@ -87,31 +87,31 @@ function normalizeOptions(options) {
 			if (typeof _model === 'string') {
 				data.model = _model;
 			} else {
-				Throw.TypeError('args[0].data.model', 'string');
+				ThrowTypeError('args[0].data.model', 'string');
 			}
 
 			if (typeof _init === 'function') {
 				data.init = _init;
 			} else {
-				Throw.TypeError('args[0].data.init', 'function');
+				ThrowTypeError('args[0].data.init', 'function');
 			}
 
 			if (typeof _description === 'string') {
 				data.description = _description;
 			} else {
-				Throw.TypeError('args[0].data.description', 'string');
+				ThrowTypeError('args[0].data.description', 'string');
 			}
 
 			if (typeof _isValid === 'function') {
 				data.isValid = _isValid;
 			} else {
-				Throw.TypeError('args[0].data.isValid', 'function');
+				ThrowTypeError('args[0].data.isValid', 'function');
 			}
 		} else {
-			Throw.TypeError('args[0].data', 'plain object');
+			ThrowTypeError('args[0].data', 'plain object');
 		}
 	} else {
-		Throw.TypeError('args[0]', 'plain object');
+		ThrowTypeError('args[0]', 'plain object');
 	}
 
 	return _options;
