@@ -28,7 +28,7 @@ export default Abstract(class DirectorGenerator {
 		const stack = [];
 		let current = root;
 
-		for await (const step of this[I.PROVIDER]) {
+		for await (const step of this[I.PROVIDER].seek()) {
 			if (step.action === ENTER) {
 				const child = new Directory();
 
@@ -50,7 +50,6 @@ export default Abstract(class DirectorGenerator {
 	}
 }, ...[
 	Abstract.Static({
-		[_I.PROVIDE]: M.Method().args(M.Any).returns(M.Any),
 		[_S.DIRECTORY_CONSTRUCTOR]: Parser.ImplementedDirectoryConstructor,
 	}),
 ]);
