@@ -1,2 +1,2 @@
 import './Step.spec.mjs';
-import './AbstractProvider.spec.mjs';
+import './Abstract.spec.mjs';

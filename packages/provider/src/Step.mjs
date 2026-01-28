@@ -1,18 +1,13 @@
 import { ThrowTypeError } from '@produck/type-error';
 
-const count = (function *count() {
-	let count = 0;
-
-	while (true) {
-		yield count;
-
-		count = (count + 1) % Number.MAX_SAFE_INTEGER;
-	}
-})();
+export const $I = {
+	ACTION: {
+		GET: Symbol('.getAction()'),
+	},
+};
 
 export class Step {
 	#state = {
-		id: count.next().value,
 		node: null,
 		action: null,
 	};
@@ -23,6 +18,10 @@ export class Step {
 		}
 
 		this.#state.node = args[0];
+	}
+
+	get [$I.ACTION.GET]() {
+		return this.#state.action;
 	}
 
 	get state() {

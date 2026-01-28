@@ -104,6 +104,29 @@ describe('::AbstractDirectoryProvider()', () => {
 	});
 
 	describe('.seek()', () => {
+		const actionList = [
+			{ node: 'root', action: true },
+			{ node: 'a', action: true },
+			{ node: 'aa', action: true },
+			{ node: 'aa', action: false },
+			{ node: 'ab', action: true },
+			{ node: 'aba', action: true },
+			{ node: 'abaa', action: true },
+			{ node: 'abaa', action: false },
+			{ node: 'abab', action: true },
+			{ node: 'abab', action: false },
+			{ node: 'aba', action: false },
+			{ node: 'abb', action: true },
+			{ node: 'abb', action: false },
+			{ node: 'ab', action: false },
+			{ node: 'ac', action: true },
+			{ node: 'ac', action: false },
+			{ node: 'a', action: false },
+			{ node: 'b', action: true },
+			{ node: 'b', action: false },
+			{ node: 'root', action: false },
+		];
+
 		it('should throw if bad origin.', () => {
 			const provider = new MockDirectoryProvider();
 
@@ -121,28 +144,69 @@ describe('::AbstractDirectoryProvider()', () => {
 				list.push({ node, action });
 			}
 
-			assert.deepEqual(list, [
-				{ node: 'root', action: true },
-				{ node: 'a', action: true },
-				{ node: 'aa', action: true },
-				{ node: 'aa', action: false },
-				{ node: 'ab', action: true },
-				{ node: 'aba', action: true },
-				{ node: 'abaa', action: true },
-				{ node: 'abaa', action: false },
-				{ node: 'abab', action: true },
-				{ node: 'abab', action: false },
-				{ node: 'aba', action: false },
-				{ node: 'abb', action: true },
-				{ node: 'abb', action: false },
-				{ node: 'ab', action: false },
-				{ node: 'ac', action: true },
-				{ node: 'ac', action: false },
-				{ node: 'a', action: false },
-				{ node: 'b', action: true },
-				{ node: 'b', action: false },
-				{ node: 'root', action: false },
-			]);
+			assert.deepEqual(list, actionList);
+		});
+
+		it('should throw if not paired.', async () => {
+			const steps = {};
+			const badList = [...actionList];
+
+			badList.splice(5, 1);
+
+			class NotPairedDirectoryProvider extends MockDirectoryProvider {
+				async *[_I.STEPS]() {
+					for (const { node, action } of badList) {
+						if (!Object.hasOwn(steps, node)) {
+							steps[node] = this.createStep(node);
+						}
+
+						yield action ? steps[node].enter() : steps[node].leave();
+					}
+				}
+			}
+
+			const provider = new NotPairedDirectoryProvider();
+
+			await assert.rejects(async () => {
+				for await (const step of provider.seek(root)) {
+					if (step) {
+						continue;
+					}
+				}
+			}, {
+				name: 'Error',
+				message: 'Bad Implementation, NOT paired.',
+			});
+		});
+
+		it('should throw if any step not leave.', async () => {
+			const steps = {};
+			const badList = actionList.slice(0, -1);
+
+			class NotPairedDirectoryProvider extends MockDirectoryProvider {
+				async *[_I.STEPS]() {
+					for (const { node, action } of badList) {
+						if (!Object.hasOwn(steps, node)) {
+							steps[node] = this.createStep(node);
+						}
+
+						yield action ? steps[node].enter() : steps[node].leave();
+					}
+				}
+			}
+
+			const provider = new NotPairedDirectoryProvider();
+
+			await assert.rejects(async () => {
+				for await (const step of provider.seek(root)) {
+					if (step) {
+						continue;
+					}
+				}
+			}, {
+				name: 'Error',
+				message: 'Bad Implementation, steps NOT leave.',
+			});
 		});
 	});
 });

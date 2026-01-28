@@ -15,13 +15,6 @@ describe('::Step', () => {
 		it('should create a step.', () => {
 			new Step(null);
 		});
-
-		it('should no same id.', () => {
-			const a = new Step(null);
-			const b = new Step(null);
-
-			assert.notEqual(a.state.id, b.state.id);
-		});
 	});
 
 	describe('.state', () => {
@@ -29,13 +22,6 @@ describe('::Step', () => {
 			const step = new Step(null);
 
 			assert.notEqual(step.state, step.state);
-		});
-
-		it('should no same id.', () => {
-			const a = new Step(null);
-			const b = new Step(null);
-
-			assert.notEqual(a.state.id, b.state.id);
 		});
 	});
 
