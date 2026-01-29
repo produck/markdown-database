@@ -5,13 +5,6 @@ import { Step, isStep } from '../src/Step.mjs';
 
 describe('::Step', () => {
 	describe('new()', () => {
-		it('should throw if no arguments.', () => {
-			assert.throws(() => new Step(), {
-				name: 'Error',
-				message: 'There MUST be only 1 argument(as node).',
-			});
-		});
-
 		it('should create a step.', () => {
 			new Step(null);
 		});

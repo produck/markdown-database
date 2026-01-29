@@ -12,12 +12,8 @@ export class Step {
 		action: null,
 	};
 
-	constructor(...args) {
-		if (args.length !== 1) {
-			throw new Error('There MUST be only 1 argument(as node).');
-		}
-
-		this.#state.node = args[0];
+	constructor(node) {
+		this.#state.node = node;
 	}
 
 	get [$I.ACTION.GET]() {
