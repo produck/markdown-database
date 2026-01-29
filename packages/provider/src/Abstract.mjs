@@ -28,8 +28,8 @@ const Assert = {
 	Step: AssertionChecker(isStep, 'Step'),
 };
 
-export default Abstract(class DirectoryProvider {
-	[I.CONSTRUCTOR] = DirectoryProvider;
+export default Abstract(class CelluloseProvider {
+	[I.CONSTRUCTOR] = CelluloseProvider;
 
 	constructor() {
 		this[I.CONSTRUCTOR] = new.target;
