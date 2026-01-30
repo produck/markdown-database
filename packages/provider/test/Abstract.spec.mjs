@@ -43,7 +43,7 @@ class MockDirectoryProvider extends AbstractProvider {
 	}
 
 	static get [_S.ORIGIN.DESCRIPTION]() {
-		return 'node';
+		return 'string';
 	}
 
 	static [_S.ORIGIN.IS_VALID](value) {
@@ -51,7 +51,7 @@ class MockDirectoryProvider extends AbstractProvider {
 	}
 
 	static get [_S.NODE.DESCRIPTION]() {
-		return 'string';
+		return 'node';
 	}
 
 	static [_S.NODE.IS_VALID](value) {
@@ -86,13 +86,22 @@ describe('::AbstractDirectoryProvider()', () => {
 		});
 	});
 
+	describe('::description', () => {
+		it('should get a description.', () => {
+			assert.deepEqual(MockDirectoryProvider.description, {
+				node: 'node',
+				origin: 'string',
+			});
+		});
+	});
+
 	describe('.createStep()', () => {
 		it('should throw if bad origin.', () => {
 			const provider = new MockDirectoryProvider();
 
 			assert.throws(() => provider.createStep(null), {
 				name: 'TypeError',
-				message: 'Invalid "args[0] as node", one "string" expected.',
+				message: 'Invalid "args[0] as node", one "node" expected.',
 			});
 		});
 
@@ -132,7 +141,7 @@ describe('::AbstractDirectoryProvider()', () => {
 
 			assert.throws(() => provider.seek(null), {
 				name: 'TypeError',
-				message: 'Invalid "args[0] as origin", one "node" expected.',
+				message: 'Invalid "args[0] as origin", one "string" expected.',
 			});
 		});
 

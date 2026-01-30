@@ -90,6 +90,13 @@ export default Abstract(class CelluloseProvider {
 	static isNode(value) {
 		return this[_S.NODE.IS_VALID](value);
 	}
+
+	static get description() {
+		return {
+			origin: this[_S.ORIGIN.DESCRIPTION],
+			node: this[_S.NODE.DESCRIPTION],
+		};
+	}
 },
 ...[
 	Abstract({
