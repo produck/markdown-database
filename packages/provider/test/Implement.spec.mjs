@@ -106,6 +106,28 @@ describe('::Implement()', () => {
 		});
 	});
 
+	it('should use provided static descriptions in error messages', () => {
+		const options = FullOptions();
+
+		options.origin.isValid = () => false;
+		options.origin.description = 'MY_ORIGIN';
+		options.node.isValid = () => false;
+		options.node.description = 'MY_NODE';
+
+		const Provider = Implement(options);
+		const provider = new Provider();
+
+		assert.throws(() => provider.seek(null), {
+			name: 'TypeError',
+			message: 'Invalid "args[0] as origin", one "MY_ORIGIN" expected.',
+		});
+
+		assert.throws(() => provider.createStep(null), {
+			name: 'TypeError',
+			message: 'Invalid "args[0] as node", one "MY_NODE" expected.',
+		});
+	});
+
 	it('should get ImplementedProvider', async () => {
 		const Provider = Implement(FullOptions());
 
