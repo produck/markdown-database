@@ -34,17 +34,17 @@ function normalizeOptions(options) {
 
 			const {
 				isValid: _isValid,
-				descritpion: _description,
+				description: _description,
 			} = _origin;
 
 			if (typeof _isValid === 'function') {
-				final.origin.isValid = _isValid;
+				final.options.origin.isValid = _isValid;
 			} else {
 				ThrowTypeError('args[0].origin.isValid', 'function');
 			}
 
 			if (typeof _description === 'string') {
-				final.origin.descritpion = _description;
+				final.options.origin.description = _description;
 			} else {
 				ThrowTypeError('args[0].origin.description', 'string');
 			}
@@ -57,17 +57,17 @@ function normalizeOptions(options) {
 
 			const {
 				isValid: _isValid,
-				descritpion: _description,
+				description: _description,
 			} = _node;
 
 			if (typeof _isValid === 'function') {
-				final.node.isValid = _isValid;
+				final.options.node.isValid = _isValid;
 			} else {
 				ThrowTypeError('args[0].node.isValid', 'function');
 			}
 
 			if (typeof _description === 'string') {
-				final.node.descritpion = _description;
+				final.options.node.description = _description;
 			} else {
 				ThrowTypeError('args[0].node.description', 'string');
 			}
@@ -91,12 +91,12 @@ export function Implement(options) {
 	const _options = normalizeOptions(options);
 
 	return SCP(class ImplementedDirectoryProvider extends Abstract {
-		async [_I.STEPS](origin) {
-			return _options.steps(origin, this);
+		async *[_I.STEPS](origin) {
+			yield * _options.steps(origin, this);
 		}
 
 		static get [_S.ORIGIN.DESCRIPTION]() {
-			return _options.origin.descritpion;
+			return _options.origin.description;
 		}
 
 		static [_S.ORIGIN.IS_VALID](value) {
@@ -104,7 +104,7 @@ export function Implement(options) {
 		}
 
 		static get [_S.NODE.DESCRIPTION]() {
-			return _options.node.descritpion;
+			return _options.node.description;
 		}
 
 		static [_S.NODE.IS_VALID](value) {
