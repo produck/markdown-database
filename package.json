@@ -20,7 +20,7 @@
 		"typescript-eslint": "^8.53.1"
 	},
 	"workspaces": [
-		"packages/directory",
+		"packages/node",
 		"packages/generator",
 		"packages/provider"
 	]

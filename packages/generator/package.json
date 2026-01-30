@@ -25,7 +25,7 @@
 		"test:only": "node --test-only ./test/index.mjs"
 	},
 	"dependencies": {
-		"@produck/cellulose-directory": "*",
+		"@produck/cellulose-node": "*",
 		"@produck/es-abstract": "^0.3.0",
 		"@produck/type-error": "^0.1.1"
 	}

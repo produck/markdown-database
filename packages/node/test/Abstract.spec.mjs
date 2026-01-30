@@ -57,11 +57,11 @@ describe('::Directory()', () => {
 
 	describe('::isDirectory()', () => {
 		it('should get true.', () => {
-			assert.equal(TestDirectory.isDirectory(new TestDirectory()), true);
+			assert.equal(TestDirectory.isNode(new TestDirectory()), true);
 		});
 
 		it('should get false.', () => {
-			assert.equal(TestDirectory.isDirectory(null), false);
+			assert.equal(TestDirectory.isNode(null), false);
 		});
 	});
 
@@ -123,7 +123,7 @@ describe('::Directory()', () => {
 
 			assert.throws(() => childBar.name = 'foo', {
 				name: 'Error',
-				message: 'A sibling directory named "foo" has been existed.',
+				message: 'A sibling node named "foo" has been existed.',
 			});
 		});
 	});
@@ -185,7 +185,7 @@ describe('::Directory()', () => {
 
 			assert.throws(() => directory.appendChild(null), {
 				name: 'TypeError',
-				message: 'Invalid "args[0]", one "Directory" expected.',
+				message: 'Invalid "args[0]", one "Node" expected.',
 			});
 		});
 
@@ -228,7 +228,7 @@ describe('::Directory()', () => {
 
 			assert.throws(() => directory.removeChild(null), {
 				name: 'TypeError',
-				message: 'Invalid "args[0]", one "Directory" expected.',
+				message: 'Invalid "args[0]", one "Node" expected.',
 			});
 		});
 
@@ -237,7 +237,7 @@ describe('::Directory()', () => {
 
 			assert.throws(() => directory.removeChild(new TestDirectory()), {
 				name: 'Error',
-				message: 'The directory to be removed is not a child of this directory.',
+				message: 'The node to be removed is not a child of this node.',
 			});
 		});
 
@@ -309,18 +309,18 @@ describe('::Directory()', () => {
 			}
 
 			assert.deepEqual(stepList, [
-				{ directory: a, action: ENTER },
-				{ directory: aa, action: ENTER },
-				{ directory: aaa, action: ENTER },
-				{ directory: aaa, action: LEAVE },
-				{ directory: aa, action: LEAVE },
-				{ directory: ab, action: ENTER },
-				{ directory: aba, action: ENTER },
-				{ directory: aba, action: LEAVE },
-				{ directory: abb, action: ENTER },
-				{ directory: abb, action: LEAVE },
-				{ directory: ab, action: LEAVE },
-				{ directory: a, action: LEAVE },
+				{ node: a, action: ENTER },
+				{ node: aa, action: ENTER },
+				{ node: aaa, action: ENTER },
+				{ node: aaa, action: LEAVE },
+				{ node: aa, action: LEAVE },
+				{ node: ab, action: ENTER },
+				{ node: aba, action: ENTER },
+				{ node: aba, action: LEAVE },
+				{ node: abb, action: ENTER },
+				{ node: abb, action: LEAVE },
+				{ node: ab, action: LEAVE },
+				{ node: a, action: LEAVE },
 			]);
 		});
 	});

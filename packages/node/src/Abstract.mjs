@@ -9,12 +9,11 @@ const I = {
 	CHILDREN: Symbol('.#children'),
 	NAME: Symbol('.#name'),
 	DATA: Symbol('.#data'),
-	SET_PARENT: Symbol('.#setParent()'),
 	READABLE_NAME: Symbol('.#readableName'),
 	ASSERT: {
 		NAME: Symbol('.#assertName()'),
 		DATA: Symbol('.#assertData()'),
-		DIRECTORY: Symbol('.#assertDirectory()'),
+		NODE: Symbol('.#assertNode()'),
 	},
 	CHILD: {
 		HAS: Symbol('.#hasChild()'),
@@ -45,16 +44,16 @@ export const _S = {
 	},
 };
 
-export default Abstract(class Directory {
-	[I.TARGET_CONSTRUCTOR] = Directory;
+export default Abstract(class Node {
+	[I.TARGET_CONSTRUCTOR] = Node;
 
 	constructor() {
 		this[I.TARGET_CONSTRUCTOR] = new.target;
 	}
 
-	[I.ASSERT.DIRECTORY](value, role) {
+	[I.ASSERT.NODE](value, role) {
 		if (!(value instanceof this[I.TARGET_CONSTRUCTOR])) {
-			ThrowTypeError(role, 'Directory');
+			ThrowTypeError(role, 'Node');
 		}
 	}
 
@@ -72,7 +71,7 @@ export default Abstract(class Directory {
 
 	[I.PARENT] = null;
 
-	/** @type {Directory | null} */
+	/** @type {Node | null} */
 	get parent() {
 		return this[I.PARENT];
 	}
@@ -84,10 +83,6 @@ export default Abstract(class Directory {
 			yield current;
 			current = current.parent;
 		}
-	}
-
-	[I.SET_PARENT](value) {
-		this[I.PARENT] = value;
 	}
 
 	[I.NAME] = this[_I.NAME.INIT]();
@@ -106,7 +101,7 @@ export default Abstract(class Directory {
 		if (this.parent !== null && this.parent.hasChild(value)) {
 			const name = this[_I.NAME.TO_STRING](value);
 
-			throw new Error(`A sibling directory named "${name}" has been existed.`);
+			throw new Error(`A sibling node named "${name}" has been existed.`);
 		}
 
 		this[I.NAME] = value;
@@ -124,7 +119,7 @@ export default Abstract(class Directory {
 		this[I.DATA] = value;
 	}
 
-	/** @type {Directory[]} */
+	/** @type {Node[]} */
 	[I.CHILDREN] = [];
 
 	[I.CHILD.HAS](name) {
@@ -143,47 +138,47 @@ export default Abstract(class Directory {
 		return this[I.CHILD.HAS](name);
 	}
 
-	/** @param {Directory} directory */
-	[I.CHILD.APPEND](directory) {
-		if (this[I.CHILDREN].includes(directory)) {
-			return directory;
+	/** @param {Node} node */
+	[I.CHILD.APPEND](node) {
+		if (this[I.CHILDREN].includes(node)) {
+			return node;
 		}
 
-		if (this[I.CHILD.HAS](directory.name)) {
-			throw new Error(`A child named "${directory[I.READABLE_NAME]}" has been existed.`);
+		if (this[I.CHILD.HAS](node.name)) {
+			throw new Error(`A child named "${node[I.READABLE_NAME]}" has been existed.`);
 		}
 
-		this[I.CHILDREN].push(directory);
-		directory[I.SET_PARENT](this);
+		this[I.CHILDREN].push(node);
+		node[I.PARENT] = this;
 
-		return directory;
+		return node;
 	}
 
-	/** @param {Directory} directory */
-	appendChild(directory) {
-		this[I.ASSERT.DIRECTORY](directory, 'args[0]');
+	/** @param {Node} node */
+	appendChild(node) {
+		this[I.ASSERT.NODE](node, 'args[0]');
 
-		return this[I.CHILD.APPEND](directory);
+		return this[I.CHILD.APPEND](node);
 	}
 
-	/** @param {Directory} directory */
-	[I.CHILD.REMOVE](directory) {
-		const index = this[I.CHILDREN].indexOf(directory);
+	/** @param {Node} node */
+	[I.CHILD.REMOVE](node) {
+		const index = this[I.CHILDREN].indexOf(node);
 
 		if (index < 0) {
-			throw new Error('The directory to be removed is not a child of this directory.');
+			throw new Error('The node to be removed is not a child of this node.');
 		}
 
 		this[I.CHILDREN].splice(index, 1);
-		directory[I.SET_PARENT](null);
+		node[I.PARENT] = null;
 
-		return directory;
+		return node;
 	}
 
-	removeChild(directory) {
-		this[I.ASSERT.DIRECTORY](directory, 'args[0]');
+	removeChild(node) {
+		this[I.ASSERT.NODE](node, 'args[0]');
 
-		return this[I.CHILD.REMOVE](directory);
+		return this[I.CHILD.REMOVE](node);
 	}
 
 	*children() {
@@ -193,13 +188,13 @@ export default Abstract(class Directory {
 	}
 
 	*directories() {
-		yield { directory: this, action: ACTION.ENTER };
+		yield { node: this, action: ACTION.ENTER };
 
 		for (const child of this.children()) {
 			yield * child.directories();
 		}
 
-		yield { directory: this, action: ACTION.LEAVE };
+		yield { node: this, action: ACTION.LEAVE };
 	}
 
 	static get model() {
@@ -209,7 +204,7 @@ export default Abstract(class Directory {
 		};
 	}
 
-	static isDirectory(value) {
+	static isNode(value) {
 		return value instanceof this;
 	}
 }, ...[

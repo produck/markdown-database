@@ -1,4 +1,4 @@
-import { AbstractDirectory } from '@produck/cellulose-directory';
+import { AbstractDirectory } from '@produck/cellulose-node';
 
 const { isPrototypeOf } = Object.prototype;
 
