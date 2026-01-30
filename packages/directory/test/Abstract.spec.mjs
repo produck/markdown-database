@@ -1,7 +1,7 @@
 import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { ACTION } from '../src/Symbol.mjs';
+import * as ACTION from '../src/Action.mjs';
 import AbstractDirectory, { _I, _S } from '../src/Abstract.mjs';
 
 class TestDirectory extends AbstractDirectory {
@@ -79,7 +79,7 @@ describe('::Directory()', () => {
 			assert.equal(new TestDirectory().parent, null);
 		});
 
-		it.only('should get its parent.', () => {
+		it('should get its parent.', () => {
 			const parent = new TestDirectory();
 			const directory = new TestDirectory();
 
@@ -322,6 +322,26 @@ describe('::Directory()', () => {
 				{ directory: ab, action: LEAVE },
 				{ directory: a, action: LEAVE },
 			]);
+		});
+	});
+
+	describe('.parents()', () => {
+		it('should get a generator.', () => {
+			const a = new TestDirectory();
+			const aa = new TestDirectory();
+			const aaa = new TestDirectory();
+
+			a.name = 'a';
+			aa.name = 'aa';
+			aaa.name = 'aaa';
+
+			a.appendChild(aa);
+			aa.appendChild(aaa);
+
+			const parents = aaa.parents();
+
+			assert.ok(!Array.isArray(parents));
+			assert.deepEqual([...parents], [aa, a]);
 		});
 	});
 });

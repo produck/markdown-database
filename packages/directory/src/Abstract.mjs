@@ -1,7 +1,7 @@
 import { ThrowTypeError } from '@produck/type-error';
 import Abstract, { Member as M } from '@produck/es-abstract';
 
-import { ACTION } from './Symbol.mjs';
+import * as ACTION from './Action.mjs';
 
 const I = {
 	TARGET_CONSTRUCTOR: Symbol('.#targetConstructor'),
@@ -75,6 +75,15 @@ export default Abstract(class Directory {
 	/** @type {Directory | null} */
 	get parent() {
 		return this[I.PARENT];
+	}
+
+	*parents() {
+		let current = this.parent;
+
+		while (current !== null) {
+			yield current;
+			current = current.parent;
+		}
 	}
 
 	[I.SET_PARENT](value) {
