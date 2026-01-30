@@ -21,7 +21,7 @@ export default Abstract(class DirectorGenerator {
 
 	async generate() {
 		/**
-		 * @type {import('@produck/cellulose-directory').DirectoryConstructor}
+		 * @type {import('@produck/cellulose-node').DirectoryConstructor}
 		 */
 		const Directory = this[I.DIRECTORY_CONSTRUCTOR];
 		const root = new Directory();

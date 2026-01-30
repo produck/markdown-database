@@ -1,0 +1,306 @@
+import { ThrowTypeError } from '@produck/type-error';
+import Abstract, { Member as M } from '@produck/es-abstract';
+
+import * as ACTION from './Action.mjs';
+import { I, _I, _S } from './Symbol.mjs';
+
+export default Abstract(class Node {
+	[I.CONSTRUCTOR] = Node;
+
+	constructor() {
+		this[I.CONSTRUCTOR] = new.target;
+	}
+
+	[I.ASSERT.NODE](value, role) {
+		if (!(value instanceof this[I.CONSTRUCTOR])) {
+			ThrowTypeError(role, 'Node');
+		}
+	}
+
+	[I.ASSERT.NAME](value, role) {
+		if (!this[_I.NAME.IS_VALID](value)) {
+			ThrowTypeError(role, this[_I.NAME.DESCRIPTION]);
+		}
+	}
+
+	[I.ASSERT.DATA](value, role) {
+		if (!this[_I.DATA.IS_VALID](value)) {
+			ThrowTypeError(role, this[_I.DATA.DESCRIPTION]);
+		}
+	}
+
+	[I.ASSERT.NOT_ANCESTOR](node) {
+		for (const parent of this.parents()) {
+			if (node === parent) {
+				throw new Error('The new child is an ancestor of the parent');
+			}
+		}
+	}
+
+	[I.ASSERT.CHILD](node, role) {
+		if (node[I.PARENT] !== this) {
+			throw new Error(`The node ${role} is not a child of this node.`);
+		}
+	}
+
+	[I.PARENT] = null;
+	[I.SIBLING.PREVIOUS] = null;
+	[I.SIBLING.NEXT] = null;
+	[I.CHILD.FIRST] = null;
+	[I.CHILD.LAST] = null;
+
+	get parent() {
+		return this[I.PARENT];
+	}
+
+	get previousSibling() {
+		return this[I.SIBLING.PREVIOUS];
+	}
+
+	get nextSibling() {
+		return this[I.SIBLING.NEXT];
+	}
+
+	get firstChild() {
+		return this[I.CHILD.LAST];
+	}
+
+	get lastChild() {
+		return this[I.CHILD.FIRST];
+	}
+
+	*parents() {
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		let current = this;
+
+		while (current !== null) {
+			yield current;
+			current = current[I.PARENT];
+		}
+	}
+
+	*children() {
+		let current = this[I.CHILD.FIRST];
+
+		if (current !== null) {
+			yield current;
+			current = current[I.SIBLING.NEXT];
+		}
+	}
+
+	*nodes() {
+		yield { node: this, action: ACTION.ENTER };
+
+		for (const child of this.children()) {
+			yield * child.nodes();
+		}
+
+		yield { node: this, action: ACTION.LEAVE };
+	}
+
+	[I.NAME] = this[_I.NAME.INIT]();
+
+	get [I.READABLE_NAME]() {
+		return this[_I.NAME.TO_STRING](this[I.NAME]);
+	}
+
+	get name() {
+		return this[I.NAME];
+	}
+
+	set name(value) {
+		this[I.ASSERT.NAME](value, 'assigned value');
+
+		if (this.parent !== null && this.parent.hasChild(value)) {
+			const name = this[_I.NAME.TO_STRING](value);
+
+			throw new Error(`A sibling node named "${name}" has been existed.`);
+		}
+
+		this[I.NAME] = value;
+	}
+
+	[I.DATA] = this[_I.DATA.INIT]();
+
+	get data() {
+		return this[I.DATA];
+	}
+
+	set data(value) {
+		this[I.ASSERT.DATA](value, 'assigned value');
+
+		this[I.DATA] = value;
+	}
+
+	[I.IS.SAME](node) {
+		return node === this;
+	}
+
+	isSameNode(node) {
+		this[I.ASSERT.NODE](node);
+
+		return this[I.IS.SAME](node);
+	}
+
+	[I.IS.NAME_EQUAL](node) {
+		return this[_I.NAME.EQUAL](node.name, this.name);
+	}
+
+	isNameEqualNode(node) {
+		this[I.ASSERT.NAME](node, 'args[0] as node');
+
+		return this[I.IS.NAME_EQUAL](node);
+	}
+
+	[I.CHILD.CONTAINS](node) {
+		for (const step of this.nodes()) {
+			if (step.action === ACTION.ENTER && step.node === node) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	contains(node) {
+		this[I.ASSERT.NODE](node, 'args[0] as node');
+
+		return this[I.CHILD.CONTAINS](node);
+	}
+
+	[I.DETACH]() {
+		const hasParent = this[I.PARENT] !== null;
+		const hasPrevious = this[I.SIBLING.PREVIOUS] !== null;
+		const hasNext = this[I.SIBLING.NEXT] !== null;
+
+		if (hasParent) {
+			if (!hasPrevious) {
+				this[I.PARENT][I.CHILD.FIRST] = this[I.SIBLING.NEXT];
+			}
+
+			if (!hasNext) {
+				this[I.PARENT][I.CHILD.LAST] = this[I.SIBLING.PREVIOUS];
+			}
+
+			this[I.PARENT] = null;
+		}
+
+		if (hasPrevious) {
+			this[I.SIBLING.PREVIOUS][I.SIBLING.NEXT] = this[I.SIBLING.NEXT];
+			this[I.SIBLING.PREVIOUS] = null;
+		}
+
+		if (hasNext) {
+			this[I.SIBLING.NEXT][I.SIBLING.PREVIOUS] = this[I.SIBLING.PREVIOUS];
+			this[I.SIBLING.NEXT] = null;
+		}
+	}
+
+	[I.CHILD.APPEND](node) {
+		node[I.DETACH]();
+		node[I.PARENT] = this;
+		node[I.SIBLING.PREVIOUS] = this[I.CHILD.LAST];
+		this[I.CHILD.LAST][I.SIBLING.NEXT] = node;
+		this[I.CHILD.LAST] = node;
+	}
+
+	appendChild(node) {
+		this[I.ASSERT.NODE](node, 'args[0] as node');
+		this[I.ASSERT.NOT_ANCESTOR](node);
+		this[I.CHILD.APPEND](node);
+
+		return node;
+	}
+
+	[I.CHILD.REMOVE](node) {
+		node[I.DETACH]();
+	}
+
+	removeChild(node) {
+		this[I.ASSERT.NODE](node, 'args[0] as node');
+		this[I.ASSERT.CHILD](node, 'to be removed');
+		this[I.CHILD.REMOVE](node);
+
+		return node;
+	}
+
+	[I.CHILD.REPLACE](newChild, oldChild) {
+		newChild[I.DETACH]();
+		oldChild[I.DETACH]();
+		newChild[I.PARENT] = this;
+		newChild[I.SIBLING.PREVIOUS] = oldChild[I.SIBLING.PREVIOUS];
+		newChild[I.SIBLING.NEXT] = oldChild[I.SIBLING.NEXT];
+
+		if (this[I.CHILD.FIRST] === oldChild) {
+			this[I.CHILD.FIRST] = newChild;
+		}
+
+		if (this[I.CHILD.LAST] === oldChild) {
+			this[I.CHILD.LAST] = newChild;
+		}
+	}
+
+	replaceChild(newChild, oldChild) {
+		this[I.ASSERT.NODE](newChild, 'args[0] as newChild');
+		this[I.ASSERT.NODE](oldChild, 'args[1] as oldChild');
+		this[I.ASSERT.NOT_ANCESTOR](newChild);
+		this[I.ASSERT.CHILD](oldChild, 'to be replaced');
+		this[I.CHILD.REPLACE](newChild, oldChild);
+
+		return oldChild;
+	}
+
+	[I.CHILD.INSERT](newNode, referenceNode) {
+		newNode[I.DETACH]();
+		newNode[I.PARENT] = this;
+		newNode[I.SIBLING.PREVIOUS] = referenceNode[I.SIBLING.PREVIOUS];
+		newNode[I.SIBLING.NEXT] = referenceNode;
+		referenceNode[I.SIBLING.PREVIOUS] = newNode;
+
+		if (this[I.CHILD.FIRST] === referenceNode) {
+			this[I.CHILD.FIRST] = newNode;
+		}
+	}
+
+	insertBefore(newNode, referenceNode) {
+		this[I.ASSERT.NODE](newNode, 'args[0] as newNode');
+		this[I.ASSERT.NODE](referenceNode, 'args[1] as referenceNode');
+		this[I.ASSERT.NOT_ANCESTOR](newNode);
+		this[I.ASSERT.CHILD](oldChild, 'to insert before');
+		this[I.CHILD.INSERT](newNode, referenceNode);
+
+		return newNode;
+	}
+
+	hasChildNodes() {
+		return this[I.CHILD.FIRST] !== null;
+	}
+
+	static get model() {
+		return {
+			name: this[_S.MODEL.NAME],
+			data: this[_S.MODEL.DATA],
+		};
+	}
+
+	static isNode(value) {
+		return value instanceof this;
+	}
+}, ...[
+	Abstract({
+		[_I.NAME.INIT]: M.Method().returns(M.Any),
+		[_I.NAME.EQUAL]: M.Method().returns(M.Boolean),
+		[_I.NAME.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
+		[_I.NAME.TO_STRING]: M.Method().returns(M.String),
+		[_I.NAME.DESCRIPTION]: M.String,
+	}),
+	Abstract({
+		[_I.DATA.INIT]: M.Method().returns(M.Any),
+		[_I.DATA.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
+		[_I.DATA.DESCRIPTION]: M.String,
+	}),
+	Abstract.Static({
+		[_S.MODEL.NAME]: M.String,
+		[_S.MODEL.DATA]: M.String,
+	}),
+]);
