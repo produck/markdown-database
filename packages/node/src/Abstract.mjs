@@ -4,6 +4,10 @@ import Abstract, { Member as M } from '@produck/es-abstract';
 import * as ACTION from './Action.mjs';
 import { I, _I, _S } from './Symbol.mjs';
 
+function ThrowError(message) {
+	throw new Error(message);
+}
+
 export default Abstract(class Node {
 	[I.CONSTRUCTOR] = Node;
 
@@ -18,28 +22,28 @@ export default Abstract(class Node {
 	}
 
 	[I.ASSERT.NAME](value, role) {
-		if (!this[_I.NAME.IS_VALID](value)) {
-			ThrowTypeError(role, this[_I.NAME.DESCRIPTION]);
+		if (!this[I.CONSTRUCTOR][_S.NAME.IS_VALID](value)) {
+			ThrowTypeError(role, this[I.CONSTRUCTOR][_S.NAME.DESCRIPTION]);
 		}
 	}
 
 	[I.ASSERT.DATA](value, role) {
-		if (!this[_I.DATA.IS_VALID](value)) {
-			ThrowTypeError(role, this[_I.DATA.DESCRIPTION]);
+		if (!this[I.CONSTRUCTOR][_S.DATA.IS_VALID](value)) {
+			ThrowTypeError(role, this[I.CONSTRUCTOR][_S.DATA.DESCRIPTION]);
 		}
 	}
 
 	[I.ASSERT.NOT_ANCESTOR](node) {
 		for (const parent of this.parents()) {
 			if (node === parent) {
-				throw new Error('The new child is an ancestor of the parent');
+				ThrowError('The new child is an ancestor of the parent');
 			}
 		}
 	}
 
 	[I.ASSERT.CHILD](node, role) {
 		if (node[I.PARENT] !== this) {
-			throw new Error(`The node ${role} is not a child of this node.`);
+			ThrowError(`The node ${role} is not a child of this node.`);
 		}
 	}
 
@@ -62,11 +66,11 @@ export default Abstract(class Node {
 	}
 
 	get firstChild() {
-		return this[I.CHILD.LAST];
+		return this[I.CHILD.FIRST];
 	}
 
 	get lastChild() {
-		return this[I.CHILD.FIRST];
+		return this[I.CHILD.LAST];
 	}
 
 	*parents() {
@@ -100,10 +104,6 @@ export default Abstract(class Node {
 
 	[I.NAME] = this[_I.NAME.INIT]();
 
-	get [I.READABLE_NAME]() {
-		return this[_I.NAME.TO_STRING](this[I.NAME]);
-	}
-
 	get name() {
 		return this[I.NAME];
 	}
@@ -111,10 +111,16 @@ export default Abstract(class Node {
 	set name(value) {
 		this[I.ASSERT.NAME](value, 'assigned value');
 
-		if (this.parent !== null && this.parent.hasChild(value)) {
-			const name = this[_I.NAME.TO_STRING](value);
+		const parent = this[I.PARENT];
 
-			throw new Error(`A sibling node named "${name}" has been existed.`);
+		if (parent !== null && parent.hasChildNodes()) {
+			for (const child of parent.children()) {
+				if (this.isNameEqualNode(child)) {
+					const readableName = this[_I.NAME.TO_STRING](value);
+
+					ThrowError(`A sibling node named "${readableName}" already exists.`);
+				}
+			}
 		}
 
 		this[I.NAME] = value;
@@ -147,7 +153,7 @@ export default Abstract(class Node {
 	}
 
 	isNameEqualNode(node) {
-		this[I.ASSERT.NAME](node, 'args[0] as node');
+		this[I.ASSERT.NODE](node, 'args[0] as node');
 
 		return this[I.IS.NAME_EQUAL](node);
 	}
@@ -200,7 +206,13 @@ export default Abstract(class Node {
 		node[I.DETACH]();
 		node[I.PARENT] = this;
 		node[I.SIBLING.PREVIOUS] = this[I.CHILD.LAST];
-		this[I.CHILD.LAST][I.SIBLING.NEXT] = node;
+
+		if (this.hasChildNodes()) {
+			this[I.CHILD.LAST][I.SIBLING.NEXT] = node;
+		} else {
+			this[I.CHILD.FIRST] = node;
+		}
+
 		this[I.CHILD.LAST] = node;
 	}
 
@@ -266,7 +278,7 @@ export default Abstract(class Node {
 		this[I.ASSERT.NODE](newNode, 'args[0] as newNode');
 		this[I.ASSERT.NODE](referenceNode, 'args[1] as referenceNode');
 		this[I.ASSERT.NOT_ANCESTOR](newNode);
-		this[I.ASSERT.CHILD](oldChild, 'to insert before');
+		this[I.ASSERT.CHILD](referenceNode, 'to insert before');
 		this[I.CHILD.INSERT](newNode, referenceNode);
 
 		return newNode;
@@ -276,31 +288,37 @@ export default Abstract(class Node {
 		return this[I.CHILD.FIRST] !== null;
 	}
 
-	static get model() {
+	static get description() {
 		return {
-			name: this[_S.MODEL.NAME],
-			data: this[_S.MODEL.DATA],
+			name: this[_S.NAME.DESCRIPTION],
+			data: this[_S.DATA.DESCRIPTION],
 		};
 	}
 
 	static isNode(value) {
 		return value instanceof this;
 	}
+
+	static isValidName(value) {
+		return this[_S.NAME.IS_VALID](value);
+	}
+
+	static isValidData(value) {
+		return this[_S.DATA.IS_VALID](value);
+	}
 }, ...[
 	Abstract({
 		[_I.NAME.INIT]: M.Method().returns(M.Any),
 		[_I.NAME.EQUAL]: M.Method().returns(M.Boolean),
-		[_I.NAME.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
 		[_I.NAME.TO_STRING]: M.Method().returns(M.String),
-		[_I.NAME.DESCRIPTION]: M.String,
 	}),
 	Abstract({
 		[_I.DATA.INIT]: M.Method().returns(M.Any),
-		[_I.DATA.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
-		[_I.DATA.DESCRIPTION]: M.String,
 	}),
 	Abstract.Static({
-		[_S.MODEL.NAME]: M.String,
-		[_S.MODEL.DATA]: M.String,
+		[_S.NAME.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
+		[_S.NAME.DESCRIPTION]: M.String,
+		[_S.DATA.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
+		[_S.DATA.DESCRIPTION]: M.String,
 	}),
 ]);

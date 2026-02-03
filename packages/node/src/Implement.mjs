@@ -1,7 +1,8 @@
 import { ThrowTypeError } from '@produck/type-error';
 import { SubConstructorProxy as SCP } from '@produck/es-abstract';
 
-import AbstractDirectory, { _I, _S } from './Abstract.mjs';
+import AbstractDirectory from './Abstract.mjs';
+import { _I } from './Symbol.mjs';
 
 function isPlainObject(value) {
 	if (typeof value !== 'object' || value === null) {

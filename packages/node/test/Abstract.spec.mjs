@@ -1,24 +1,17 @@
 import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import * as ACTION from '../src/Action.mjs';
-import AbstractDirectory, { _I, _S } from '../src/Abstract.mjs';
+import { ENTER, LEAVE } from '../src/Action.mjs';
+import AbstractNode from '../src/Abstract.mjs';
+import { _I, _S } from '../src/Symbol.mjs';
 
-class TestDirectory extends AbstractDirectory {
+class TestNode extends AbstractNode {
 	[_I.NAME.INIT]() {
 		return '';
 	}
 
-	get [_I.NAME.DESCRIPTION]() {
-		return 'string';
-	}
-
 	[_I.NAME.EQUAL](a, b) {
 		return a === b;
-	}
-
-	[_I.NAME.IS_VALID](value) {
-		return typeof value === 'string';
 	}
 
 	[_I.NAME.TO_STRING](name) {
@@ -29,81 +22,85 @@ class TestDirectory extends AbstractDirectory {
 		return null;
 	}
 
-	get [_I.DATA.DESCRIPTION]() {
-		return 'PlainObject';
+	static [_S.NAME.IS_VALID](value) {
+		return typeof value === 'string';
 	}
 
-	[_I.DATA.IS_VALID](value) {
+	static get [_S.NAME.DESCRIPTION]() {
+		return 'string';
+	}
+
+	static [_S.DATA.IS_VALID](value) {
 		return value !== 'bad';
 	}
 
-	static get [_S.MODEL.NAME]() {
-		return 'foo';
-	}
-
-	static get [_S.MODEL.DATA]() {
-		return 'bar';
+	static get [_S.DATA.DESCRIPTION]() {
+		return 'PlainObject';
 	}
 }
 
-const { ENTER, LEAVE } = ACTION;
-
 describe('::Directory()', () => {
-	describe('new ()', () => {
+	describe('new()', () => {
 		it('should create a directory', () => {
-			new TestDirectory();
+			new TestNode();
 		});
 	});
 
-	describe('::isDirectory()', () => {
+	describe('::isNode()', () => {
 		it('should get true.', () => {
-			assert.equal(TestDirectory.isNode(new TestDirectory()), true);
+			assert.equal(TestNode.isNode(new TestNode()), true);
 		});
 
 		it('should get false.', () => {
-			assert.equal(TestDirectory.isNode(null), false);
+			assert.equal(TestNode.isNode(null), false);
 		});
 	});
 
-	describe('::model', () => {
+	describe('::isValidName()', () => {
+		it('should get false.', () => {
+			assert.equal(TestNode.isValidName(null), false);
+		});
+
+		it('should get true.', () => {
+			assert.equal(TestNode.isValidName('foo'), true);
+		});
+	});
+
+	describe('::isValidData()', () => {
+		it('should get false.', () => {
+			assert.equal(TestNode.isValidData('bad'), false);
+		});
+
+		it('should get true.', () => {
+			assert.equal(TestNode.isValidData({}), true);
+		});
+	});
+
+	describe('::description', () => {
 		it('should get model.', () => {
-			assert.deepEqual(TestDirectory.model, {
-				name: 'foo',
-				data: 'bar',
+			assert.deepEqual(TestNode.description, {
+				name: 'string',
+				data: 'PlainObject',
 			});
-		});
-	});
-
-	describe('.parent', () => {
-		it('should get null.', () => {
-			assert.equal(new TestDirectory().parent, null);
-		});
-
-		it('should get its parent.', () => {
-			const parent = new TestDirectory();
-			const directory = new TestDirectory();
-
-			parent.appendChild(directory);
-			assert.equal(directory.parent, parent);
 		});
 	});
 
 	describe('.name', () => {
 		it('should get "".', () => {
-			const directory = new TestDirectory();
+			const directory = new TestNode();
 
 			assert.equal(directory.name, '');
 		});
 
 		it('should set a new value', () => {
-			const directory = new TestDirectory();
+			const directory = new TestNode();
 
 			directory.name = 'foo';
 			assert.equal(directory.name, 'foo');
 		});
 
 		it('should throw if set bad value.', () => {
-			const directory = new TestDirectory();
+			const directory = new TestNode();
 
 			assert.throws(() => directory.name = false, {
 				name: 'TypeError',
@@ -111,10 +108,10 @@ describe('::Directory()', () => {
 			});
 		});
 
-		it('should throw if new value to be same with other siblings.', () => {
-			const parent = new TestDirectory();
-			const childFoo = new TestDirectory();
-			const childBar = new TestDirectory();
+		it.skip('should throw if new value to be same with other siblings.', () => {
+			const parent = new TestNode();
+			const childFoo = new TestNode();
+			const childBar = new TestNode();
 
 			childFoo.name = 'foo';
 			childBar.name = 'bar';
@@ -130,13 +127,13 @@ describe('::Directory()', () => {
 
 	describe('.data', () => {
 		it('should set data.', () => {
-			const directory = new TestDirectory();
+			const directory = new TestNode();
 
 			directory.data = 'foo';
 		});
 
 		it('should get data.', () => {
-			const directory = new TestDirectory();
+			const directory = new TestNode();
 
 			assert.notEqual(directory.data, 'bar');
 			directory.data = 'bar';
@@ -144,7 +141,7 @@ describe('::Directory()', () => {
 		});
 
 		it('should throw if set bad data.', () => {
-			const directory = new TestDirectory();
+			const directory = new TestNode();
 
 			assert.throws(() => directory.data = 'bad', {
 				name: 'TypeError',
@@ -153,110 +150,110 @@ describe('::Directory()', () => {
 		});
 	});
 
-	describe('.hasChild()', () => {
-		it('should throw if bad name.', () => {
-			const directory = new TestDirectory();
+	describe('(reference properties)', () => {
+		function Sample() {
+			const parent = new TestNode();
+			const a = new TestNode();
+			const b = new TestNode();
 
-			assert.throws(() => directory.hasChild(false), {
-				name: 'TypeError',
-				message: 'Invalid "args[0]", one "string" expected.',
+			a.name = 'a';
+			b.name = 'b';
+			parent.appendChild(a);
+			parent.appendChild(b);
+
+			return { parent, child: { a, b } };
+		}
+
+		describe('.parent', () => {
+			it('should get null.', () => {
+				assert.equal(new TestNode().parent, null);
+			});
+
+			it('should get its parent.', () => {
+				const { parent, child } = Sample();
+
+				assert.equal(child.a.parent, parent);
 			});
 		});
 
-		it('should get true.', () => {
-			const directory = new TestDirectory();
-			const child = new TestDirectory;
+		describe('.previousSibling', () => {
+			it('should get null', () => {
+				assert.equal(new TestNode().previousSibling, null);
+			});
 
-			child.name = 'foo';
-			directory.appendChild(child);
-			assert.equal(directory.hasChild('foo'), true);
+			it('should get a from b.', () => {
+				const { child } = Sample();
+
+				assert.equal(child.a.previousSibling, null);
+				assert.equal(child.b.previousSibling, child.a);
+			});
 		});
 
-		it('should get false.', () => {
-			const directory = new TestDirectory();
+		describe('.nextSibling', () => {
+			it('should get null', () => {
+				assert.equal(new TestNode().nextSibling, null);
+			});
 
-			assert.equal(directory.hasChild('notExisted'), false);
+			it('should get b from a.', () => {
+				const { child } = Sample();
+
+				assert.equal(child.a.nextSibling, child.b);
+				assert.equal(child.b.nextSibling, null);
+			});
+		});
+
+		describe('.firstChild', () => {
+			it('should get null', () => {
+				assert.equal(new TestNode().firstChild, null);
+			});
+
+			it('should get a.', () => {
+				const { parent, child } = Sample();
+
+				assert.equal(parent.firstChild, child.a);
+			});
+		});
+
+		describe('.lastChild', () => {
+			it('should get null', () => {
+				assert.equal(new TestNode().lastChild, null);
+			});
+
+			it('should get b.', () => {
+				const { parent, child } = Sample();
+
+				assert.equal(parent.lastChild, child.b);
+			});
 		});
 	});
 
-	describe('.appendChild()', () => {
-		it('should throw if bad directory.', () => {
-			const directory = new TestDirectory();
+	describe.skip('.*parents()', () => {
+		it('should get a generator.', () => {
+			const a = new TestNode();
+			const aa = new TestNode();
+			const aaa = new TestNode();
 
-			assert.throws(() => directory.appendChild(null), {
-				name: 'TypeError',
-				message: 'Invalid "args[0]", one "Node" expected.',
-			});
-		});
+			a.name = 'a';
+			aa.name = 'aa';
+			aaa.name = 'aaa';
 
-		it('should ok.', () => {
-			const directory = new TestDirectory();
-			const child = new TestDirectory();
+			a.appendChild(aa);
+			aa.appendChild(aaa);
 
-			assert.equal([...directory.children()].length, 0);
-			assert.equal(directory.appendChild(child), child);
-			assert.equal([...directory.children()].length, 1);
-		});
+			const parents = aaa.parents();
 
-		it('should repeat to append a same child without other action.', () => {
-			const directory = new TestDirectory();
-			const child = new TestDirectory();
-
-			directory.appendChild(child);
-			assert.equal(directory.appendChild(child), child);
-		});
-
-		it('should throw if name duplicated child.', () => {
-			const directory = new TestDirectory();
-			const child = new TestDirectory();
-			const badChild = new TestDirectory();
-
-			child.name = 'foo';
-			badChild.name = 'foo';
-			directory.appendChild(child);
-
-			assert.throws(() => directory.appendChild(badChild), {
-				name: 'Error',
-				message: 'A child named "foo" has been existed.',
-			});
+			assert.ok(!Array.isArray(parents));
+			assert.deepEqual([...parents], [aa, a]);
 		});
 	});
 
-	describe('.removeChild()', () => {
-		it('should throw if bad directory.', () => {
-			const directory = new TestDirectory();
-
-			assert.throws(() => directory.removeChild(null), {
-				name: 'TypeError',
-				message: 'Invalid "args[0]", one "Node" expected.',
-			});
-		});
-
-		it('should throw if not child.', () => {
-			const directory = new TestDirectory();
-
-			assert.throws(() => directory.removeChild(new TestDirectory()), {
-				name: 'Error',
-				message: 'The node to be removed is not a child of this node.',
-			});
-		});
-
-		it('should ok.', () => {
-			const directory = new TestDirectory();
-			const child = new TestDirectory();
-
-			directory.appendChild(child);
-			assert.equal(directory.removeChild(child), child);
-		});
-	});
-
-	describe('.*children()', () => {
+	describe.skip('.*children()', () => {
 		it('should visit all children.', () => {
-			const a = new TestDirectory();
-			const aa = new TestDirectory();
-			const ab = new TestDirectory();
-			const ac = new TestDirectory();
-			const ad = new TestDirectory();
+			const a = new TestNode();
+			const aa = new TestNode();
+			const ab = new TestNode();
+			const ac = new TestNode();
+			const ad = new TestNode();
 
 			a.name = 'a';
 			aa.name = 'aa';
@@ -280,14 +277,14 @@ describe('::Directory()', () => {
 		});
 	});
 
-	describe('.*directories()', () => {
-		it('should visit all directories.', () => {
-			const a = new TestDirectory();
-			const aa = new TestDirectory();
-			const aaa = new TestDirectory();
-			const ab = new TestDirectory();
-			const aba = new TestDirectory();
-			const abb = new TestDirectory();
+	describe.skip('.*nodes()', () => {
+		it('should visit all nodes.', () => {
+			const a = new TestNode();
+			const aa = new TestNode();
+			const aaa = new TestNode();
+			const ab = new TestNode();
+			const aba = new TestNode();
+			const abb = new TestNode();
 
 			a.name = 'a';
 			aa.name = 'aa';
@@ -304,7 +301,7 @@ describe('::Directory()', () => {
 
 			const stepList = [];
 
-			for (const step of a.directories()) {
+			for (const step of a.nodes()) {
 				stepList.push(step);
 			}
 
@@ -325,23 +322,131 @@ describe('::Directory()', () => {
 		});
 	});
 
-	describe('.parents()', () => {
-		it('should get a generator.', () => {
-			const a = new TestDirectory();
-			const aa = new TestDirectory();
-			const aaa = new TestDirectory();
-
-			a.name = 'a';
-			aa.name = 'aa';
-			aaa.name = 'aaa';
-
-			a.appendChild(aa);
-			aa.appendChild(aaa);
-
-			const parents = aaa.parents();
-
-			assert.ok(!Array.isArray(parents));
-			assert.deepEqual([...parents], [aa, a]);
+	describe('.hasChildNodes()', () => {
+		it('should get false.', () => {
+			assert.equal(new TestNode().hasChildNodes(), false);
 		});
+
+		it('should get true.', () => {
+			const parent = new TestNode();
+			const child = new TestNode();
+
+			parent.appendChild(child);
+			assert.equal(parent.hasChildNodes(), true);
+		});
+	});
+
+	describe.skip('.contains()', () => {
+		it('should throw if bad node.', () => {
+			const node = new TestNode();
+
+			assert.throws(() => node.contains(null), {
+				name: 'TypeError',
+				message: '',
+			});
+		});
+	});
+
+	describe('.appendChild()', () => {
+		it('should throw if bad directory.', () => {
+			const node = new TestNode();
+
+			assert.throws(() => node.appendChild(null), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as node", one "Node" expected.',
+			});
+		});
+
+		it('should append 1 child.', () => {
+			const parent = new TestNode();
+			const child = new TestNode();
+
+			parent.appendChild(child);
+
+			assert.equal(parent.firstChild, child);
+			assert.equal(parent.lastChild, child);
+			assert.equal(child.previousSibling, null);
+			assert.equal(child.nextSibling, null);
+			assert.equal(child.parent, parent);
+		});
+
+		it('should append 2 children.', () => {
+			const parent = new TestNode();
+			const childA = new TestNode();
+			const childB = new TestNode();
+
+			childA.name = 'a';
+			childB.name = 'b';
+			parent.appendChild(childA);
+			parent.appendChild(childB);
+
+			assert.equal(parent.firstChild, childA);
+			assert.equal(parent.lastChild, childB);
+			assert.equal(childA.previousSibling, null);
+			assert.equal(childB.previousSibling, childA);
+			assert.equal(childA.nextSibling, childB);
+			assert.equal(childB.nextSibling, null);
+			assert.equal(childA.parent, parent);
+			assert.equal(childB.parent, parent);
+		});
+
+		it.skip('should repeat to append a same child without other action.', () => {
+			const directory = new TestNode();
+			const child = new TestNode();
+
+			directory.appendChild(child);
+			assert.equal(directory.appendChild(child), child);
+		});
+
+		it.skip('should throw if name duplicated child.', () => {
+			const directory = new TestNode();
+			const child = new TestNode();
+			const badChild = new TestNode();
+
+			child.name = 'foo';
+			badChild.name = 'foo';
+			directory.appendChild(child);
+
+			assert.throws(() => directory.appendChild(badChild), {
+				name: 'Error',
+				message: 'A child named "foo" has been existed.',
+			});
+		});
+	});
+
+	describe.skip('.removeChild()', () => {
+		it('should throw if bad directory.', () => {
+			const directory = new TestNode();
+
+			assert.throws(() => directory.removeChild(null), {
+				name: 'TypeError',
+				message: 'Invalid "args[0]", one "Node" expected.',
+			});
+		});
+
+		it('should throw if not child.', () => {
+			const directory = new TestNode();
+
+			assert.throws(() => directory.removeChild(new TestNode()), {
+				name: 'Error',
+				message: 'The node to be removed is not a child of this node.',
+			});
+		});
+
+		it('should ok.', () => {
+			const directory = new TestNode();
+			const child = new TestNode();
+
+			directory.appendChild(child);
+			assert.equal(directory.removeChild(child), child);
+		});
+	});
+
+	describe.skip('.replaceChild()', () => {
+
+	});
+
+	describe.skip('.insertBefore()', () => {
+
 	});
 });

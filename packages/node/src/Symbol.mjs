@@ -35,20 +35,20 @@ export const _I = {
 	NAME: {
 		INIT: Symbol('._initName()'),
 		EQUAL: Symbol('._nameEqual()'),
-		IS_VALID: Symbol('._isValidName()'),
 		TO_STRING: Symbol('._nameToString()'),
-		DESCRIPTION: Symbol('._nameDescription'),
 	},
 	DATA: {
 		INIT: Symbol('._initData()'),
-		IS_VALID: Symbol('._isValidData'),
-		DESCRIPTION: Symbol('._nameDescription'),
 	},
 };
 
 export const _S = {
-	MODEL: {
-		NAME: Symbol('::nameModel'),
-		DATA: Symbol('::dataModel'),
+	NAME: {
+		IS_VALID: Symbol('._isValidName()'),
+		DESCRIPTION: Symbol('._nameDescription'),
+	},
+	DATA: {
+		IS_VALID: Symbol('._isValidData'),
+		DESCRIPTION: Symbol('._nameDescription'),
 	},
 };
