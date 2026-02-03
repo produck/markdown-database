@@ -559,26 +559,17 @@ describe('::Directory()', () => {
 			assert.equal(childC.parent, parent);
 		});
 
-		it.skip('should repeat to append a same child without other action.', () => {
-			const directory = new TestNode();
-			const child = new TestNode();
+		it('should throw if appending ancestor node.', () => {
+			const a = new TestNode();
+			const aa = new TestNode();
+			const aaa = new TestNode();
 
-			directory.appendChild(child);
-			assert.equal(directory.appendChild(child), child);
-		});
+			a.appendChild(aa);
+			aa.appendChild(aaa);
 
-		it.skip('should throw if name duplicated child.', () => {
-			const directory = new TestNode();
-			const child = new TestNode();
-			const badChild = new TestNode();
-
-			child.name = 'foo';
-			badChild.name = 'foo';
-			directory.appendChild(child);
-
-			assert.throws(() => directory.appendChild(badChild), {
+			assert.throws(() => aa.appendChild(a), {
 				name: 'Error',
-				message: 'A child named "foo" has been existed.',
+				message: 'The new child is an ancestor of the parent',
 			});
 		});
 	});
