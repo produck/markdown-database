@@ -338,6 +338,73 @@ describe('::Directory()', () => {
 		});
 	});
 
+	describe('.isSameNode()', () => {
+		it('should get true.', () => {
+			const a = new TestNode();
+
+			assert.equal(a.isSameNode(a), true);
+		});
+
+		it('should get false.', () => {
+			const a = new TestNode();
+			const b = new TestNode();
+
+			assert.equal(a.isSameNode(b), false);
+		});
+
+		it('should throw if bad node.', () => {
+			const a = new TestNode();
+
+			assert.throws(() => a.isSameNode(null), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as node", one "Node" expected.',
+			});
+		});
+
+		it('should throw if other Node class instance.', () => {
+			const a = new TestNode();
+
+			class OtherNode extends AbstractNode {
+				[_I.NAME.INIT]() {
+					return '';
+				}
+
+				[_I.NAME.EQUAL](a, b) {
+					return a === b;
+				}
+
+				[_I.NAME.TO_STRING](name) {
+					return name;
+				}
+
+				[_I.DATA.INIT]() {
+					return null;
+				}
+
+				static [_S.NAME.IS_VALID](value) {
+					return typeof value === 'string';
+				}
+
+				static get [_S.NAME.DESCRIPTION]() {
+					return 'string';
+				}
+
+				static [_S.DATA.IS_VALID](value) {
+					return value !== 'bad';
+				}
+
+				static get [_S.DATA.DESCRIPTION]() {
+					return 'PlainObject';
+				}
+			}
+
+			assert.throws(() => a.isSameNode(new OtherNode()), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as node", one "Node" expected.',
+			});
+		});
+	});
+
 	describe.skip('.contains()', () => {
 		it('should throw if bad node.', () => {
 			const node = new TestNode();

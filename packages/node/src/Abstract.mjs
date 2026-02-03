@@ -143,7 +143,7 @@ export default Abstract(class Node {
 	}
 
 	isSameNode(node) {
-		this[I.ASSERT.NODE](node);
+		this[I.ASSERT.NODE](node, 'args[0] as node');
 
 		return this[I.IS.SAME](node);
 	}
