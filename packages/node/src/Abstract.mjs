@@ -48,13 +48,21 @@ export default Abstract(class Node {
 	}
 
 	[I.ASSERT.UNIQUE_CHILD_NAME](node) {
-		for (const child of this.children()) {
-			if (this[_I.NAME.EQUAL](child.name, node.name)) {
-				const readableName = this[_I.NAME.TO_STRING](node.name);
+		if (this[I.CHILD.HAS_NAME](node.name)) {
+			const readableName = this[_I.NAME.TO_STRING](node.name);
 
-				ThrowError(`A child named "${readableName}" has been existed.`);
+			ThrowError(`A child named "${readableName}" already exists.`);
+		}
+	}
+
+	[I.CHILD.HAS_NAME](name) {
+		for (const child of this.children()) {
+			if (this[_I.NAME.EQUAL](child.name, name)) {
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	[I.PARENT] = null;
@@ -124,12 +132,10 @@ export default Abstract(class Node {
 		const parent = this[I.PARENT];
 
 		if (parent !== null && parent.hasChildNodes()) {
-			for (const child of parent.children()) {
-				if (this.isNameEqualNode(child)) {
-					const readableName = this[_I.NAME.TO_STRING](value);
+			if (parent[I.CHILD.HAS_NAME](value)) {
+				const readableName = this[_I.NAME.TO_STRING](value);
 
-					ThrowError(`A sibling node named "${readableName}" already exists.`);
-				}
+				ThrowError(`A sibling node named "${readableName}" already exists.`);
 			}
 		}
 

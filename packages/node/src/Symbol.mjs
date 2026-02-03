@@ -24,6 +24,7 @@ export const I = {
 		REMOVE: Symbol('.#removeChild()'),
 		INSERT: Symbol('.#insertBefore()'),
 		REPLACE: Symbol('.#replaceChild()'),
+		HAS_NAME: Symbol('.#childHasName()'),
 	},
 	IS: {
 		SAME: Symbol('.#isSame()'),

@@ -108,7 +108,7 @@ describe('::Directory()', () => {
 			});
 		});
 
-		it.skip('should throw if new value to be same with other siblings.', () => {
+		it('should throw if new value to be same with other siblings.', () => {
 			const parent = new TestNode();
 			const childFoo = new TestNode();
 			const childBar = new TestNode();
@@ -120,7 +120,7 @@ describe('::Directory()', () => {
 
 			assert.throws(() => childBar.name = 'foo', {
 				name: 'Error',
-				message: 'A sibling node named "foo" has been existed.',
+				message: 'A sibling node named "foo" already exists.',
 			});
 		});
 	});
@@ -584,7 +584,7 @@ describe('::Directory()', () => {
 
 			assert.throws(() => directory.appendChild(badChild), {
 				name: 'Error',
-				message: 'A child named "foo" has been existed.',
+				message: 'A child named "foo" already exists.',
 			});
 		});
 	});
