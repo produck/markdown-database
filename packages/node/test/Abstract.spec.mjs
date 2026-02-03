@@ -227,98 +227,100 @@ describe('::Directory()', () => {
 		});
 	});
 
-	describe.skip('.*parents()', () => {
-		it('should get a generator.', () => {
-			const a = new TestNode();
-			const aa = new TestNode();
-			const aaa = new TestNode();
+	describe('(iterators)', () => {
+		describe('.*parents()', () => {
+			it('should get a generator.', () => {
+				const a = new TestNode();
+				const aa = new TestNode();
+				const aaa = new TestNode();
 
-			a.name = 'a';
-			aa.name = 'aa';
-			aaa.name = 'aaa';
+				a.name = 'a';
+				aa.name = 'aa';
+				aaa.name = 'aaa';
 
-			a.appendChild(aa);
-			aa.appendChild(aaa);
+				a.appendChild(aa);
+				aa.appendChild(aaa);
 
-			const parents = aaa.parents();
+				const parents = aaa.parents();
 
-			assert.ok(!Array.isArray(parents));
-			assert.deepEqual([...parents], [aa, a]);
+				assert.ok(!Array.isArray(parents));
+				assert.deepEqual([...parents], [aaa, aa, a]);
+			});
 		});
-	});
 
-	describe.skip('.*children()', () => {
-		it('should visit all children.', () => {
-			const a = new TestNode();
-			const aa = new TestNode();
-			const ab = new TestNode();
-			const ac = new TestNode();
-			const ad = new TestNode();
+		describe('.*children()', () => {
+			it('should visit all children.', () => {
+				const a = new TestNode();
+				const aa = new TestNode();
+				const ab = new TestNode();
+				const ac = new TestNode();
+				const ad = new TestNode();
 
-			a.name = 'a';
-			aa.name = 'aa';
-			ab.name = 'ab';
-			ac.name = 'ac';
-			ab.name = 'ad';
+				a.name = 'a';
+				aa.name = 'aa';
+				ab.name = 'ab';
+				ac.name = 'ac';
+				ad.name = 'ad';
 
-			for (const child of [aa, ab, ac, ad]) {
-				a.appendChild(child);
-			}
+				for (const child of [aa, ab, ac, ad]) {
+					a.appendChild(child);
+				}
 
-			const list = [];
+				const list = [];
 
-			for (const child of a.children()) {
-				list.push(child);
-			}
+				for (const child of a.children()) {
+					list.push(child);
+				}
 
-			for (const child of [aa, ab, ac, ad]) {
-				assert.ok(list.includes(child));
-			}
+				for (const child of [aa, ab, ac, ad]) {
+					assert.ok(list.includes(child));
+				}
+			});
 		});
-	});
 
-	describe.skip('.*nodes()', () => {
-		it('should visit all nodes.', () => {
-			const a = new TestNode();
-			const aa = new TestNode();
-			const aaa = new TestNode();
-			const ab = new TestNode();
-			const aba = new TestNode();
-			const abb = new TestNode();
+		describe('.*nodes()', () => {
+			it('should visit all nodes.', () => {
+				const a = new TestNode();
+				const aa = new TestNode();
+				const aaa = new TestNode();
+				const ab = new TestNode();
+				const aba = new TestNode();
+				const abb = new TestNode();
 
-			a.name = 'a';
-			aa.name = 'aa';
-			aaa.name = 'aaa';
-			ab.name = 'ab';
-			aba.name = 'aba';
-			abb.name = 'abb';
+				a.name = 'a';
+				aa.name = 'aa';
+				aaa.name = 'aaa';
+				ab.name = 'ab';
+				aba.name = 'aba';
+				abb.name = 'abb';
 
-			a.appendChild(aa);
-			a.appendChild(ab);
-			aa.appendChild(aaa);
-			ab.appendChild(aba);
-			ab.appendChild(abb);
+				a.appendChild(aa);
+				a.appendChild(ab);
+				aa.appendChild(aaa);
+				ab.appendChild(aba);
+				ab.appendChild(abb);
 
-			const stepList = [];
+				const stepList = [];
 
-			for (const step of a.nodes()) {
-				stepList.push(step);
-			}
+				for (const step of a.nodes()) {
+					stepList.push(step);
+				}
 
-			assert.deepEqual(stepList, [
-				{ node: a, action: ENTER },
-				{ node: aa, action: ENTER },
-				{ node: aaa, action: ENTER },
-				{ node: aaa, action: LEAVE },
-				{ node: aa, action: LEAVE },
-				{ node: ab, action: ENTER },
-				{ node: aba, action: ENTER },
-				{ node: aba, action: LEAVE },
-				{ node: abb, action: ENTER },
-				{ node: abb, action: LEAVE },
-				{ node: ab, action: LEAVE },
-				{ node: a, action: LEAVE },
-			]);
+				assert.deepEqual(stepList, [
+					{ node: a, action: ENTER },
+					{ node: aa, action: ENTER },
+					{ node: aaa, action: ENTER },
+					{ node: aaa, action: LEAVE },
+					{ node: aa, action: LEAVE },
+					{ node: ab, action: ENTER },
+					{ node: aba, action: ENTER },
+					{ node: aba, action: LEAVE },
+					{ node: abb, action: ENTER },
+					{ node: abb, action: LEAVE },
+					{ node: ab, action: LEAVE },
+					{ node: a, action: LEAVE },
+				]);
+			});
 		});
 	});
 
@@ -388,6 +390,32 @@ describe('::Directory()', () => {
 			assert.equal(childB.nextSibling, null);
 			assert.equal(childA.parent, parent);
 			assert.equal(childB.parent, parent);
+		});
+
+		it('should append 3 children.', () => {
+			const parent = new TestNode();
+			const childA = new TestNode();
+			const childB = new TestNode();
+			const childC = new TestNode();
+
+			childA.name = 'a';
+			childB.name = 'b';
+			childC.name = 'c';
+			parent.appendChild(childA);
+			parent.appendChild(childB);
+			parent.appendChild(childC);
+
+			assert.equal(parent.firstChild, childA);
+			assert.equal(parent.lastChild, childC);
+			assert.equal(childA.previousSibling, null);
+			assert.equal(childB.previousSibling, childA);
+			assert.equal(childC.previousSibling, childB);
+			assert.equal(childA.nextSibling, childB);
+			assert.equal(childB.nextSibling, childC);
+			assert.equal(childC.nextSibling, null);
+			assert.equal(childA.parent, parent);
+			assert.equal(childB.parent, parent);
+			assert.equal(childC.parent, parent);
 		});
 
 		it.skip('should repeat to append a same child without other action.', () => {

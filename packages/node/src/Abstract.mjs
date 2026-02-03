@@ -86,7 +86,7 @@ export default Abstract(class Node {
 	*children() {
 		let current = this[I.CHILD.FIRST];
 
-		if (current !== null) {
+		while (current !== null) {
 			yield current;
 			current = current[I.SIBLING.NEXT];
 		}
