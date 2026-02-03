@@ -572,6 +572,21 @@ describe('::Directory()', () => {
 				message: 'The new child is an ancestor of the parent',
 			});
 		});
+
+		it('should throw if name duplicated child.', () => {
+			const directory = new TestNode();
+			const child = new TestNode();
+			const badChild = new TestNode();
+
+			child.name = 'foo';
+			badChild.name = 'foo';
+			directory.appendChild(child);
+
+			assert.throws(() => directory.appendChild(badChild), {
+				name: 'Error',
+				message: 'A child named "foo" has been existed.',
+			});
+		});
 	});
 
 	describe.skip('.removeChild()', () => {

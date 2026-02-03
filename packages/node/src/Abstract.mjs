@@ -47,6 +47,16 @@ export default Abstract(class Node {
 		}
 	}
 
+	[I.ASSERT.UNIQUE_CHILD_NAME](node) {
+		for (const child of this.children()) {
+			if (this[_I.NAME.EQUAL](child.name, node.name)) {
+				const readableName = this[_I.NAME.TO_STRING](node.name);
+
+				ThrowError(`A child named "${readableName}" has been existed.`);
+			}
+		}
+	}
+
 	[I.PARENT] = null;
 	[I.SIBLING.PREVIOUS] = null;
 	[I.SIBLING.NEXT] = null;
@@ -219,6 +229,7 @@ export default Abstract(class Node {
 	appendChild(node) {
 		this[I.ASSERT.NODE](node, 'args[0] as node');
 		this[I.ASSERT.NOT_ANCESTOR](node);
+		this[I.ASSERT.UNIQUE_CHILD_NAME](node);
 		this[I.CHILD.APPEND](node);
 
 		return node;
@@ -256,6 +267,7 @@ export default Abstract(class Node {
 		this[I.ASSERT.NODE](newChild, 'args[0] as newChild');
 		this[I.ASSERT.NODE](oldChild, 'args[1] as oldChild');
 		this[I.ASSERT.NOT_ANCESTOR](newChild);
+		this[I.ASSERT.UNIQUE_CHILD_NAME](newChild);
 		this[I.ASSERT.CHILD](oldChild, 'to be replaced');
 		this[I.CHILD.REPLACE](newChild, oldChild);
 
@@ -278,6 +290,7 @@ export default Abstract(class Node {
 		this[I.ASSERT.NODE](newNode, 'args[0] as newNode');
 		this[I.ASSERT.NODE](referenceNode, 'args[1] as referenceNode');
 		this[I.ASSERT.NOT_ANCESTOR](newNode);
+		this[I.ASSERT.UNIQUE_CHILD_NAME](newNode);
 		this[I.ASSERT.CHILD](referenceNode, 'to insert before');
 		this[I.CHILD.INSERT](newNode, referenceNode);
 

@@ -9,6 +9,7 @@ export const I = {
 		DATA: Symbol('.#assertData()'),
 		NODE: Symbol('.#assertNode()'),
 		NOT_ANCESTOR: Symbol('.#assertNotAncestor()'),
+		UNIQUE_CHILD_NAME: Symbol('.#assertUniqueChildName()'),
 		CHILD: Symbol('.#assertChild()'),
 	},
 	SIBLING: {
