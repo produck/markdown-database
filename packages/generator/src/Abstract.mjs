@@ -1,4 +1,4 @@
-import Abstract, { Member as M } from '@produck/es-abstract';
+import Abstract from '@produck/es-abstract';
 import * as Parser from './Parser.mjs';
 
 const ENTER = true;

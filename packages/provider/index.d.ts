@@ -16,10 +16,7 @@ export interface StepState<N = unknown> {
  * type-safety of public API.
  * @template N - Type of the node
  */
-declare class Step<N = unknown> {
-	/** Create a new step for the given node */
-	constructor(node: N);
-
+interface Step<N = unknown> {
 	/** Get the current step state with node and action */
 	readonly state: StepState<N>;
 
@@ -32,6 +29,15 @@ declare class Step<N = unknown> {
 	/** Set action to LEAVE (false) */
 	leave(): this;
 }
+
+/**
+ * Constructor for Step instances
+ */
+interface StepConstructor {
+	new <N = unknown>(node: N): Step<N>;
+}
+
+declare const Step: StepConstructor;
 
 /** Symbols used to reference private contract members */
 export const _I: {
@@ -63,10 +69,7 @@ export const _S: {
  * @template O - Type of the origin for traversal
  * @template N - Type of the nodes being visited
  */
-declare abstract class AbstractProvider<O = unknown, N = unknown> {
-	/** Initialize a new provider instance */
-	constructor();
-
+export interface AbstractProvider<O = unknown, N = unknown> {
 	/**
 	 * Create a Step for the given node. Validates node via
 	 * static `isNode`.
@@ -86,30 +89,39 @@ declare abstract class AbstractProvider<O = unknown, N = unknown> {
 	 * (ENTER/LEAVE)
 	 */
 	seek(origin: O): AsyncIterableIterator<StepState<N>>;
+}
+
+/**
+ * Constructor and static methods for AbstractProvider
+ */
+export interface AbstractProviderConstructor<O = unknown, N = unknown> {
+	new(): AbstractProvider<O, N>;
 
 	/**
 	 * Check if a value is a valid origin for this provider
 	 * @param value - The value to check
 	 * @returns true if value is a valid origin
 	 */
-	static isOrigin(value: unknown): boolean;
+	isOrigin(value: unknown): boolean;
 
 	/**
 	 * Check if a value is a valid node for this provider
 	 * @param value - The value to check
 	 * @returns true if value is a valid node
 	 */
-	static isNode(value: unknown): boolean;
+	isNode(value: unknown): boolean;
 
 	/**
 	 * Get descriptions of origin and node types
 	 * @returns Object with origin and node description strings
 	 */
-	static get description(): {
+	description: {
 		origin: string;
 		node: string;
 	};
 }
+
+declare const AbstractProvider: AbstractProviderConstructor;
 
 export default AbstractProvider;
 
@@ -167,4 +179,4 @@ export interface ImplementOptions<O = unknown, N = unknown> {
  */
 export function Implement<O = unknown, N = unknown>(
 	options: ImplementOptions<O, N>,
-): typeof AbstractProvider<O, N>;
+): AbstractProviderConstructor<O, N>;
