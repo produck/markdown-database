@@ -479,14 +479,103 @@ describe('::Node()', () => {
 		});
 	});
 
-	describe.skip('.contains()', () => {
+	describe('.contains()', () => {
 		it('should throw if bad node.', () => {
 			const node = new TestNode();
 
 			assert.throws(() => node.contains(null), {
 				name: 'TypeError',
-				message: '',
+				message: 'Invalid "args[0] as node", one "Node" expected.',
 			});
+		});
+
+		it('should throw if other Node class instance.', () => {
+			const node = new TestNode();
+
+			class OtherNode extends AbstractNode {
+				[_I.NAME.INIT]() {
+					return '';
+				}
+
+				[_I.NAME.EQUAL](a, b) {
+					return a === b;
+				}
+
+				[_I.NAME.TO_STRING](name) {
+					return name;
+				}
+
+				[_I.DATA.INIT]() {
+					return null;
+				}
+
+				static [_S.NAME.IS_VALID](value) {
+					return typeof value === 'string';
+				}
+
+				static get [_S.NAME.DESCRIPTION]() {
+					return 'string';
+				}
+
+				static [_S.DATA.IS_VALID](value) {
+					return value !== 'bad';
+				}
+
+				static get [_S.DATA.DESCRIPTION]() {
+					return 'PlainObject';
+				}
+			}
+
+			assert.throws(() => node.contains(new OtherNode()), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as node", one "Node" expected.',
+			});
+		});
+
+		it('should return false if node is not in tree.', () => {
+			const root = new TestNode();
+			const child = new TestNode();
+			const notInTree = new TestNode();
+
+			root.appendChild(child);
+
+			assert.equal(root.contains(notInTree), false);
+		});
+
+		it('should return true if node is direct child.', () => {
+			const root = new TestNode();
+			const child = new TestNode();
+
+			child.name = 'child';
+			root.appendChild(child);
+
+			assert.equal(root.contains(child), true);
+		});
+
+		it('should return true if node is descendant.', () => {
+			const root = new TestNode();
+			const child = new TestNode();
+			const grandchild = new TestNode();
+
+			child.name = 'child';
+			grandchild.name = 'grandchild';
+			root.appendChild(child);
+			child.appendChild(grandchild);
+
+			assert.equal(root.contains(grandchild), true);
+		});
+
+		it('should return false if checking from non-ancestor.', () => {
+			const root = new TestNode();
+			const child1 = new TestNode();
+			const child2 = new TestNode();
+
+			child1.name = 'child1';
+			child2.name = 'child2';
+			root.appendChild(child1);
+			root.appendChild(child2);
+
+			assert.equal(child1.contains(child2), false);
 		});
 	});
 
