@@ -254,11 +254,21 @@ export default Abstract(class Node {
 	}
 
 	[I.CHILD.REPLACE](newChild, oldChild) {
+		const oldPrevious = oldChild[I.SIBLING.PREVIOUS];
+		const oldNext = oldChild[I.SIBLING.NEXT];
+
 		newChild[I.DETACH]();
-		oldChild[I.DETACH]();
 		newChild[I.PARENT] = this;
-		newChild[I.SIBLING.PREVIOUS] = oldChild[I.SIBLING.PREVIOUS];
-		newChild[I.SIBLING.NEXT] = oldChild[I.SIBLING.NEXT];
+		newChild[I.SIBLING.PREVIOUS] = oldPrevious;
+		newChild[I.SIBLING.NEXT] = oldNext;
+
+		if (oldPrevious !== null) {
+			oldPrevious[I.SIBLING.NEXT] = newChild;
+		}
+
+		if (oldNext !== null) {
+			oldNext[I.SIBLING.PREVIOUS] = newChild;
+		}
 
 		if (this[I.CHILD.FIRST] === oldChild) {
 			this[I.CHILD.FIRST] = newChild;
@@ -267,6 +277,10 @@ export default Abstract(class Node {
 		if (this[I.CHILD.LAST] === oldChild) {
 			this[I.CHILD.LAST] = newChild;
 		}
+
+		oldChild[I.PARENT] = null;
+		oldChild[I.SIBLING.PREVIOUS] = null;
+		oldChild[I.SIBLING.NEXT] = null;
 	}
 
 	replaceChild(newChild, oldChild) {
@@ -282,14 +296,21 @@ export default Abstract(class Node {
 
 	[I.CHILD.INSERT](newNode, referenceNode) {
 		newNode[I.DETACH]();
-		newNode[I.PARENT] = this;
-		newNode[I.SIBLING.PREVIOUS] = referenceNode[I.SIBLING.PREVIOUS];
-		newNode[I.SIBLING.NEXT] = referenceNode;
-		referenceNode[I.SIBLING.PREVIOUS] = newNode;
+
+		const referencePrevious = referenceNode[I.SIBLING.PREVIOUS];
+
+		if (referencePrevious !== null) {
+			referencePrevious[I.SIBLING.NEXT] = newNode;
+		}
 
 		if (this[I.CHILD.FIRST] === referenceNode) {
 			this[I.CHILD.FIRST] = newNode;
 		}
+
+		newNode[I.PARENT] = this;
+		newNode[I.SIBLING.PREVIOUS] = referenceNode[I.SIBLING.PREVIOUS];
+		newNode[I.SIBLING.NEXT] = referenceNode;
+		referenceNode[I.SIBLING.PREVIOUS] = newNode;
 	}
 
 	insertBefore(newNode, referenceNode) {

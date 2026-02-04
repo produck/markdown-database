@@ -39,9 +39,9 @@ class TestNode extends AbstractNode {
 	}
 }
 
-describe('::Directory()', () => {
+describe('::Node()', () => {
 	describe('new()', () => {
-		it('should create a directory', () => {
+		it('should create a node', () => {
 			new TestNode();
 		});
 	});
@@ -87,22 +87,22 @@ describe('::Directory()', () => {
 
 	describe('.name', () => {
 		it('should get "".', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.equal(directory.name, '');
+			assert.equal(node.name, '');
 		});
 
 		it('should set a new value', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			directory.name = 'foo';
-			assert.equal(directory.name, 'foo');
+			node.name = 'foo';
+			assert.equal(node.name, 'foo');
 		});
 
 		it('should throw if set bad value.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.throws(() => directory.name = false, {
+			assert.throws(() => node.name = false, {
 				name: 'TypeError',
 				message: 'Invalid "assigned value", one "string" expected.',
 			});
@@ -127,23 +127,23 @@ describe('::Directory()', () => {
 
 	describe('.data', () => {
 		it('should set data.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			directory.data = 'foo';
+			node.data = 'foo';
 		});
 
 		it('should get data.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.notEqual(directory.data, 'bar');
-			directory.data = 'bar';
-			assert.equal(directory.data, 'bar');
+			assert.notEqual(node.data, 'bar');
+			node.data = 'bar';
+			assert.equal(node.data, 'bar');
 		});
 
 		it('should throw if set bad data.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.throws(() => directory.data = 'bad', {
+			assert.throws(() => node.data = 'bad', {
 				name: 'TypeError',
 				message: 'Invalid "assigned value", one "PlainObject" expected.',
 			});
@@ -491,7 +491,7 @@ describe('::Directory()', () => {
 	});
 
 	describe('.appendChild()', () => {
-		it('should throw if bad directory.', () => {
+		it('should throw if bad node.', () => {
 			const node = new TestNode();
 
 			assert.throws(() => node.appendChild(null), {
@@ -574,15 +574,15 @@ describe('::Directory()', () => {
 		});
 
 		it('should throw if name duplicated child.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 			const child = new TestNode();
 			const badChild = new TestNode();
 
 			child.name = 'foo';
 			badChild.name = 'foo';
-			directory.appendChild(child);
+			node.appendChild(child);
 
-			assert.throws(() => directory.appendChild(badChild), {
+			assert.throws(() => node.appendChild(badChild), {
 				name: 'Error',
 				message: 'A child named "foo" already exists.',
 			});
@@ -590,60 +590,160 @@ describe('::Directory()', () => {
 	});
 
 	describe('.removeChild()', () => {
-		it('should throw if bad directory.', () => {
-			const directory = new TestNode();
+		it('should throw if bad node.', () => {
+			const node = new TestNode();
 
-			assert.throws(() => directory.removeChild(null), {
+			assert.throws(() => node.removeChild(null), {
 				name: 'TypeError',
 				message: 'Invalid "args[0] as node", one "Node" expected.',
 			});
 		});
 
 		it('should throw if not child.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.throws(() => directory.removeChild(new TestNode()), {
+			assert.throws(() => node.removeChild(new TestNode()), {
 				name: 'Error',
 				message: 'The node to be removed is not a child of this node.',
 			});
 		});
 
 		it('should ok.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 			const child = new TestNode();
 
-			directory.appendChild(child);
-			assert.equal(directory.removeChild(child), child);
+			node.appendChild(child);
+			assert.equal(node.removeChild(child), child);
 		});
 	});
 
-	describe.skip('.replaceChild()', () => {
+	describe('.replaceChild()', () => {
+		it('should throw if bad newChild.', () => {
+			const node = new TestNode();
 
+			assert.throws(() => node.replaceChild(null, new TestNode()), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as newChild", one "Node" expected.',
+			});
+		});
+
+		it('should throw if bad oldChild.', () => {
+			const node = new TestNode();
+
+			assert.throws(() => node.replaceChild(new TestNode(), null), {
+				name: 'TypeError',
+				message: 'Invalid "args[1] as oldChild", one "Node" expected.',
+			});
+		});
+
+		it('should throw if appending ancestor node.', () => {
+			const a = new TestNode();
+			const aa = new TestNode();
+			const aaa = new TestNode();
+
+			a.appendChild(aa);
+			aa.appendChild(aaa);
+
+			assert.throws(() => aa.replaceChild(a, aaa), {
+				name: 'Error',
+				message: 'The new child is an ancestor of the parent',
+			});
+		});
+
+		it('should throw if name duplicated child.', () => {
+			const node = new TestNode();
+			const child = new TestNode();
+			const badChild = new TestNode();
+
+			child.name = 'foo';
+			badChild.name = 'foo';
+			node.appendChild(child);
+
+			assert.throws(() => node.replaceChild(badChild, child), {
+				name: 'Error',
+				message: 'A child named "foo" already exists.',
+			});
+		});
+
+		it('should throw if oldChild not a child', () => {
+			const node = new TestNode();
+
+			assert.throws(() => node.replaceChild(new TestNode(), new TestNode()), {
+				name: 'Error',
+				message: 'The node to be replaced is not a child of this node.',
+			});
+		});
+
+		it('should replace first child', () => {
+			const node = new TestNode();
+			const a = new TestNode();
+			const b = new TestNode();
+
+			a.name = 'a';
+			b.name = 'b';
+			node.appendChild(b);
+
+			const old = node.replaceChild(a, b);
+
+			assert.equal(old, b);
+			assert.equal(node.firstChild, a);
+			assert.equal(a.previousSibling, null);
+			assert.equal(a.nextSibling, null);
+			assert.equal(a.parent, node);
+			assert.equal(old.parent, null);
+		});
+
+		it('should replace middle child', () => {
+			const node = new TestNode();
+			const a = new TestNode();
+			const b = new TestNode();
+			const c = new TestNode();
+			const x = new TestNode();
+
+			a.name = 'a';
+			b.name = 'b';
+			c.name = 'c';
+			x.name = 'x';
+
+			node.appendChild(a);
+			node.appendChild(b);
+			node.appendChild(c);
+
+			const old = node.replaceChild(x, b);
+
+			assert.equal(old, b);
+			assert.equal(a.nextSibling, x);
+			assert.equal(x.previousSibling, a);
+			assert.equal(x.nextSibling, c);
+			assert.equal(c.previousSibling, x);
+			assert.equal(x.parent, node);
+			assert.equal(old.parent, null);
+		});
 	});
 
 	describe('.insertBefore()', () => {
 		it('should throw if bad newNode.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.throws(() => directory.insertBefore(null, new TestNode()), {
+			assert.throws(() => node.insertBefore(null, new TestNode()), {
 				name: 'TypeError',
 				message: 'Invalid "args[0] as newNode", one "Node" expected.',
 			});
 		});
 
 		it('should throw if bad referenceNode.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.throws(() => directory.insertBefore(new TestNode(), null), {
+			assert.throws(() => node.insertBefore(new TestNode(), null), {
 				name: 'TypeError',
 				message: 'Invalid "args[1] as referenceNode", one "Node" expected.',
 			});
 		});
 
 		it('should throw if not child.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 
-			assert.throws(() => directory.insertBefore(new TestNode(), new TestNode()), {
+			assert.throws(() => node.insertBefore(new TestNode(), new TestNode()), {
 				name: 'Error',
 				message: 'The node to insert before is not a child of this node.',
 			});
@@ -664,38 +764,38 @@ describe('::Directory()', () => {
 		});
 
 		it('should throw if name duplicated child.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 			const child = new TestNode();
 			const badChild = new TestNode();
 
 			child.name = 'foo';
 			badChild.name = 'foo';
-			directory.appendChild(child);
+			node.appendChild(child);
 
-			assert.throws(() => directory.insertBefore(badChild, child), {
+			assert.throws(() => node.insertBefore(badChild, child), {
 				name: 'Error',
 				message: 'A child named "foo" already exists.',
 			});
 		});
 
 		it('should insert before first child.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 			const a = new TestNode();
 			const b = new TestNode();
 
 			a.name = 'a';
 			b.name = 'b';
 
-			directory.appendChild(b);
-			assert.equal(directory.insertBefore(a, b), a);
-			assert.equal(directory.firstChild, a);
+			node.appendChild(b);
+			assert.equal(node.insertBefore(a, b), a);
+			assert.equal(node.firstChild, a);
 			assert.equal(a.previousSibling, null);
 			assert.equal(a.nextSibling, b);
 			assert.equal(b.previousSibling, a);
 		});
 
 		it('should insert before middle child.', () => {
-			const directory = new TestNode();
+			const node = new TestNode();
 			const a = new TestNode();
 			const b = new TestNode();
 			const c = new TestNode();
@@ -704,9 +804,9 @@ describe('::Directory()', () => {
 			b.name = 'b';
 			c.name = 'c';
 
-			directory.appendChild(a);
-			directory.appendChild(c);
-			assert.equal(directory.insertBefore(b, c), b);
+			node.appendChild(a);
+			node.appendChild(c);
+			assert.equal(node.insertBefore(b, c), b);
 			assert.equal(a.nextSibling, b);
 			assert.equal(b.previousSibling, a);
 			assert.equal(b.nextSibling, c);
