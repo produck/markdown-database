@@ -22,6 +22,7 @@
 	"workspaces": [
 		"packages/node",
 		"packages/generator",
-		"packages/provider"
+		"packages/provider",
+		"providers/fs-directory"
 	]
 }
