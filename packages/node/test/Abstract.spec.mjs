@@ -621,7 +621,96 @@ describe('::Directory()', () => {
 
 	});
 
-	describe.skip('.insertBefore()', () => {
+	describe('.insertBefore()', () => {
+		it('should throw if bad newNode.', () => {
+			const directory = new TestNode();
 
+			assert.throws(() => directory.insertBefore(null, new TestNode()), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as newNode", one "Node" expected.',
+			});
+		});
+
+		it('should throw if bad referenceNode.', () => {
+			const directory = new TestNode();
+
+			assert.throws(() => directory.insertBefore(new TestNode(), null), {
+				name: 'TypeError',
+				message: 'Invalid "args[1] as referenceNode", one "Node" expected.',
+			});
+		});
+
+		it('should throw if not child.', () => {
+			const directory = new TestNode();
+
+			assert.throws(() => directory.insertBefore(new TestNode(), new TestNode()), {
+				name: 'Error',
+				message: 'The node to insert before is not a child of this node.',
+			});
+		});
+
+		it('should throw if appending ancestor node.', () => {
+			const a = new TestNode();
+			const aa = new TestNode();
+			const aaa = new TestNode();
+
+			a.appendChild(aa);
+			aa.appendChild(aaa);
+
+			assert.throws(() => aa.insertBefore(a, aaa), {
+				name: 'Error',
+				message: 'The new child is an ancestor of the parent',
+			});
+		});
+
+		it('should throw if name duplicated child.', () => {
+			const directory = new TestNode();
+			const child = new TestNode();
+			const badChild = new TestNode();
+
+			child.name = 'foo';
+			badChild.name = 'foo';
+			directory.appendChild(child);
+
+			assert.throws(() => directory.insertBefore(badChild, child), {
+				name: 'Error',
+				message: 'A child named "foo" already exists.',
+			});
+		});
+
+		it('should insert before first child.', () => {
+			const directory = new TestNode();
+			const a = new TestNode();
+			const b = new TestNode();
+
+			a.name = 'a';
+			b.name = 'b';
+
+			directory.appendChild(b);
+			assert.equal(directory.insertBefore(a, b), a);
+			assert.equal(directory.firstChild, a);
+			assert.equal(a.previousSibling, null);
+			assert.equal(a.nextSibling, b);
+			assert.equal(b.previousSibling, a);
+		});
+
+		it('should insert before middle child.', () => {
+			const directory = new TestNode();
+			const a = new TestNode();
+			const b = new TestNode();
+			const c = new TestNode();
+
+			a.name = 'a';
+			b.name = 'b';
+			c.name = 'c';
+
+			directory.appendChild(a);
+			directory.appendChild(c);
+			assert.equal(directory.insertBefore(b, c), b);
+			assert.equal(a.nextSibling, b);
+			assert.equal(b.previousSibling, a);
+			assert.equal(b.nextSibling, c);
+			assert.equal(c.previousSibling, b);
+		});
 	});
 });
