@@ -1,8 +1,8 @@
 import { ThrowTypeError } from '@produck/type-error';
 import { SubConstructorProxy as SCP } from '@produck/es-abstract';
 
-import AbstractDirectory from './Abstract.mjs';
-import { _I } from './Symbol.mjs';
+import AbstractNode from './Abstract.mjs';
+import { _I, _S } from './Symbol.mjs';
 
 function isPlainObject(value) {
 	if (typeof value !== 'object' || value === null) {
@@ -22,25 +22,21 @@ function normalizeOptions(options) {
 	const _options = {};
 
 	if (isPlainObject(options)) {
-		const { name: _name, data: _data } = options;
+		const {
+			name: _name,
+			data: _data,
+		} = options;
 
 		if (isPlainObject(_name)) {
-			const name = _options.name = {};
+			const name = (_options.name = {});
 
 			const {
-				model: _model,
 				init: _init,
 				description: _description,
 				isValid: _isValid,
 				equal: _equal,
 				toString: _toString,
 			} = _name;
-
-			if (typeof _model === 'string') {
-				name.model = _model;
-			} else {
-				ThrowTypeError('args[0].name.model', 'string');
-			}
 
 			if (typeof _init === 'function') {
 				name.init = _init;
@@ -76,20 +72,13 @@ function normalizeOptions(options) {
 		}
 
 		if (isPlainObject(_data)) {
-			const data = _options.data = {};
+			const data = (_options.data = {});
 
 			const {
-				model: _model,
 				init: _init,
 				description: _description,
 				isValid: _isValid,
 			} = _data;
-
-			if (typeof _model === 'string') {
-				data.model = _model;
-			} else {
-				ThrowTypeError('args[0].data.model', 'string');
-			}
 
 			if (typeof _init === 'function') {
 				data.init = _init;
@@ -121,21 +110,13 @@ function normalizeOptions(options) {
 export function Implement(options) {
 	const _options = normalizeOptions(options);
 
-	return SCP(class ImplementedDirectory extends AbstractDirectory {
+	return SCP(class ImplementedNode extends AbstractNode {
 		[_I.NAME.INIT]() {
 			return _options.name.init();
 		}
 
-		get [_I.NAME.DESCRIPTION]() {
-			return _options.name.description;
-		}
-
 		[_I.NAME.EQUAL](a, b) {
 			return _options.name.equal(a, b);
-		}
-
-		[_I.NAME.IS_VALID](value) {
-			return _options.name.isValid(value);
 		}
 
 		[_I.NAME.TO_STRING](name) {
@@ -146,20 +127,20 @@ export function Implement(options) {
 			return _options.data.init();
 		}
 
-		get [_I.DATA.DESCRIPTION]() {
-			return _options.data.description;
+		static [_S.NAME.IS_VALID](value) {
+			return _options.name.isValid(value);
 		}
 
-		[_I.DATA.IS_VALID](value) {
+		static get [_S.NAME.DESCRIPTION]() {
+			return _options.name.description;
+		}
+
+		static [_S.DATA.IS_VALID](value) {
 			return _options.data.isValid(value);
 		}
 
-		static get [_S.MODEL.NAME]() {
-			return _options.name.model;
-		}
-
-		static get [_S.MODEL.DATA]() {
-			return _options.data.model;
+		static get [_S.DATA.DESCRIPTION]() {
+			return _options.data.description;
 		}
 	});
 }

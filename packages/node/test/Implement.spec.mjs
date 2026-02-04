@@ -6,7 +6,6 @@ import { Implement } from '../src/Implement.mjs';
 function FullOptions() {
 	return {
 		name: {
-			model: '',
 			init: () => {},
 			description: '',
 			isValid: (v) => v !== 'bad',
@@ -14,7 +13,6 @@ function FullOptions() {
 			toString: (v) => v,
 		},
 		data: {
-			model: '',
 			init: () => null,
 			description: '',
 			isValid: (v) => v !== 'bad',
@@ -22,7 +20,7 @@ function FullOptions() {
 	};
 }
 
-describe.skip('::Implement()', () => {
+describe('::Implement()', () => {
 	it('should throw if bad "args[0]".', () => {
 		assert.throws(() => Implement(null), {
 			name: 'TypeError',
@@ -38,17 +36,6 @@ describe.skip('::Implement()', () => {
 		assert.throws(() => Implement(sample), {
 			name: 'TypeError',
 			message: 'Invalid "args[0].name", one "plain object" expected.',
-		});
-	});
-
-	it('should throw if bad "args[0].name.model".', () => {
-		const sample = FullOptions();
-
-		sample.name.model = [];
-
-		assert.throws(() => Implement(sample), {
-			name: 'TypeError',
-			message: 'Invalid "args[0].name.model", one "string" expected.',
 		});
 	});
 
@@ -118,17 +105,6 @@ describe.skip('::Implement()', () => {
 		});
 	});
 
-	it('should throw if bad "args[0].data.model".', () => {
-		const sample = FullOptions();
-
-		sample.data.model = [];
-
-		assert.throws(() => Implement(sample), {
-			name: 'TypeError',
-			message: 'Invalid "args[0].data.model", one "string" expected.',
-		});
-	});
-
 	it('should throw if bad "args[0].data.init".', () => {
 		const sample = FullOptions();
 
@@ -162,14 +138,12 @@ describe.skip('::Implement()', () => {
 		});
 	});
 
-	it.skip('should get ImplementdDirectory.', () => {
-		const FullOptionsDirectory = Implement(FullOptions());
+	it('should get ImplementedNode.', () => {
+		const FullOptionsNode = Implement(FullOptions());
 
-		assert.ok(FullOptionsDirectory.model);
-
-		const parent = new FullOptionsDirectory();
-		const childFoo = new FullOptionsDirectory();
-		const childBar = new FullOptionsDirectory();
+		const parent = new FullOptionsNode();
+		const childFoo = new FullOptionsNode();
+		const childBar = new FullOptionsNode();
 
 		childFoo.name = 'foo';
 		childBar.name = 'bar';
