@@ -29,7 +29,7 @@ const root = {
 	}],
 };
 
-class MockDirectoryProvider extends AbstractProvider {
+class MockNodeProvider extends AbstractProvider {
 	async *[_I.STEPS](origin) {
 		const step = this.createStep(origin.name);
 
@@ -59,36 +59,36 @@ class MockDirectoryProvider extends AbstractProvider {
 	}
 }
 
-describe('::AbstractDirectoryProvider()', () => {
+	describe('::AbstractNodeProvider()', () => {
 	describe('new()', () => {
 		it('should create a provider.', () => {
-			assert.ok(new MockDirectoryProvider());
+			assert.ok(new MockNodeProvider());
 		});
 	});
 
 	describe('::isOrigin()', () => {
 		it('should get false.', () => {
-			assert.equal(MockDirectoryProvider.isOrigin(null), false);
+			assert.equal(MockNodeProvider.isOrigin(null), false);
 		});
 
 		it('should get true.', () => {
-			assert.equal(MockDirectoryProvider.isOrigin({}), true);
+			assert.equal(MockNodeProvider.isOrigin({}), true);
 		});
 	});
 
 	describe('::isNode()', () => {
 		it('should get false.', () => {
-			assert.equal(MockDirectoryProvider.isNode(null), false);
+			assert.equal(MockNodeProvider.isNode(null), false);
 		});
 
 		it('should get true.', () => {
-			assert.equal(MockDirectoryProvider.isNode(''), true);
+			assert.equal(MockNodeProvider.isNode(''), true);
 		});
 	});
 
 	describe('::description', () => {
 		it('should get a description.', () => {
-			assert.deepEqual(MockDirectoryProvider.description, {
+			assert.deepEqual(MockNodeProvider.description, {
 				node: 'node',
 				origin: 'string',
 			});
@@ -97,7 +97,7 @@ describe('::AbstractDirectoryProvider()', () => {
 
 	describe('.createStep()', () => {
 		it('should throw if bad origin.', () => {
-			const provider = new MockDirectoryProvider();
+			const provider = new MockNodeProvider();
 
 			assert.throws(() => provider.createStep(null), {
 				name: 'TypeError',
@@ -106,7 +106,7 @@ describe('::AbstractDirectoryProvider()', () => {
 		});
 
 		it('should get a step.', () => {
-			const provider = new MockDirectoryProvider();
+			const provider = new MockNodeProvider();
 
 			assert.ok(provider.createStep('foo'));
 		});
@@ -137,7 +137,7 @@ describe('::AbstractDirectoryProvider()', () => {
 		];
 
 		it('should throw if bad origin.', () => {
-			const provider = new MockDirectoryProvider();
+			const provider = new MockNodeProvider();
 
 			assert.throws(() => provider.seek(null), {
 				name: 'TypeError',
@@ -146,7 +146,7 @@ describe('::AbstractDirectoryProvider()', () => {
 		});
 
 		it('should get steps.', async () => {
-			const provider = new MockDirectoryProvider();
+			const provider = new MockNodeProvider();
 			const list = [];
 
 			for await (const { node, action } of provider.seek(root)) {
@@ -162,7 +162,7 @@ describe('::AbstractDirectoryProvider()', () => {
 
 			badList.splice(5, 1);
 
-			class NotPairedDirectoryProvider extends MockDirectoryProvider {
+			class NotPairedNodeProvider extends MockNodeProvider {
 				async *[_I.STEPS]() {
 					for (const { node, action } of badList) {
 						if (!Object.hasOwn(steps, node)) {
@@ -174,7 +174,7 @@ describe('::AbstractDirectoryProvider()', () => {
 				}
 			}
 
-			const provider = new NotPairedDirectoryProvider();
+			const provider = new NotPairedNodeProvider();
 
 			await assert.rejects(async () => {
 				for await (const step of provider.seek(root)) {
@@ -192,7 +192,7 @@ describe('::AbstractDirectoryProvider()', () => {
 			const steps = {};
 			const badList = actionList.slice(0, -1);
 
-			class NotPairedDirectoryProvider extends MockDirectoryProvider {
+			class NotPairedNodeProvider extends MockNodeProvider {
 				async *[_I.STEPS]() {
 					for (const { node, action } of badList) {
 						if (!Object.hasOwn(steps, node)) {
@@ -204,7 +204,7 @@ describe('::AbstractDirectoryProvider()', () => {
 				}
 			}
 
-			const provider = new NotPairedDirectoryProvider();
+			const provider = new NotPairedNodeProvider();
 
 			await assert.rejects(async () => {
 				for await (const step of provider.seek(root)) {

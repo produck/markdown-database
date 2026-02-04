@@ -90,7 +90,7 @@ function normalizeOptions(options) {
 export function Implement(options) {
 	const _options = normalizeOptions(options);
 
-	return SCP(class ImplementedDirectoryProvider extends Abstract {
+	return SCP(class ImplementedNodeProvider extends Abstract {
 		async *[_I.STEPS](origin) {
 			yield * _options.steps(origin, this);
 		}
