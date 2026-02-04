@@ -1,74 +1,170 @@
 /**
  * The shape of a yielded step state from provider.seek()
+ * @template N - Type of the node being visited
  */
-export interface StepState {
-	node: unknown;
-	action: boolean | symbol; // currently boolean (ENTER/LEAVE) or custom symbol
+export interface StepState<N = unknown> {
+	/** The node being visited in the traversal */
+	node: N;
+
+	/** The action type: true for ENTER, false for LEAVE, or custom */
+	action: boolean | symbol;
 }
 
 /**
- * Internal Step helper used by providers. Not exported at runtime from the package
- * entrypoint, but declared here for type-safety of public API.
+ * Internal Step helper used by providers. Not exported at
+ * runtime from the package entrypoint, but declared here for
+ * type-safety of public API.
+ * @template N - Type of the node
  */
-declare class Step {
-	constructor(node: unknown);
-	readonly state: StepState;
+declare class Step<N = unknown> {
+	/** Create a new step for the given node */
+	constructor(node: N);
+
+	/** Get the current step state with node and action */
+	readonly state: StepState<N>;
+
+	/** Set a custom action symbol for this step */
 	action(value: symbol): this;
+
+	/** Set action to ENTER (true) */
 	enter(): this;
+
+	/** Set action to LEAVE (false) */
 	leave(): this;
 }
 
-/** Symbols used to reference private contract members in implementations */
-export const _I: { STEPS: symbol };
+/** Symbols used to reference private contract members */
+export const _I: {
+	/** Symbol for the async generator steps method */
+	readonly STEPS: unique symbol;
+};
+
 export const _S: {
-	ORIGIN: { IS_VALID: symbol; DESCRIPTION: symbol };
-	NODE: { IS_VALID: symbol; DESCRIPTION: symbol };
+	/** Static symbols for origin validation */
+	readonly ORIGIN: {
+		/** Symbol for origin validator function */
+		readonly IS_VALID: unique symbol;
+		/** Symbol for origin description */
+		readonly DESCRIPTION: unique symbol;
+	};
+	/** Static symbols for node validation */
+	readonly NODE: {
+		/** Symbol for node validator function */
+		readonly IS_VALID: unique symbol;
+		/** Symbol for node description */
+		readonly DESCRIPTION: unique symbol;
+	};
 };
 
 /**
  * Main abstract provider class exported as default.
- * Implementations extend this class and provide a method keyed by `_I.STEPS`.
+ * Implementations extend this class and provide a method
+ * keyed by `_I.STEPS`.
+ * @template O - Type of the origin for traversal
+ * @template N - Type of the nodes being visited
  */
-declare abstract class AbstractProvider {
+declare abstract class AbstractProvider<O = unknown, N = unknown> {
+	/** Initialize a new provider instance */
 	constructor();
 
 	/**
-	 * Create a Step for the given node. Validates node via static `isNode`.
+	 * Create a Step for the given node. Validates node via
+	 * static `isNode`.
+	 * @param node - The node to create a step for
+	 * @returns A new Step instance
+	 * @throws {TypeError} If node is not valid
 	 */
-	createStep(node: unknown): Step;
+	createStep(node: N): Step<N>;
 
 	/**
-	 * Iterate step states for a given origin. Validates origin via static `isOrigin`.
+	 * Iterate step states for a given origin. Validates origin
+	 * via static `isOrigin`.
+	 * @param origin - The origin to start traversal from
+	 * @returns An async iterator of step states
+	 * @throws {TypeError} If origin is not valid
+	 * @throws {Error} If steps are not properly paired
+	 * (ENTER/LEAVE)
 	 */
-	seek(origin: unknown): AsyncIterableIterator<StepState>;
+	seek(origin: O): AsyncIterableIterator<StepState<N>>;
 
+	/**
+	 * Check if a value is a valid origin for this provider
+	 * @param value - The value to check
+	 * @returns true if value is a valid origin
+	 */
 	static isOrigin(value: unknown): boolean;
+
+	/**
+	 * Check if a value is a valid node for this provider
+	 * @param value - The value to check
+	 * @returns true if value is a valid node
+	 */
 	static isNode(value: unknown): boolean;
+
+	/**
+	 * Get descriptions of origin and node types
+	 * @returns Object with origin and node description strings
+	 */
+	static get description(): {
+		origin: string;
+		node: string;
+	};
 }
 
 export default AbstractProvider;
 
 /**
  * Options accepted by `Implement()`.
- * Note: the source currently contains a misspelling `descritpion` (not `description`).
- * To be permissive in type hints we accept both keys.
+ * @template O - Type of the origin for traversal
+ * @template N - Type of the nodes being visited
  */
-export interface ImplementOptions {
+export interface ImplementOptions<O = unknown, N = unknown> {
+	/**
+	 * Configuration for origin validation and description
+	 */
 	origin: {
-		isValid: (value: unknown) => boolean;
-		description?: string;
+		/** Validator to check if value is a valid origin */
+		isValid: (value: unknown) => value is O;
+
+		/** Human-readable description of the origin type */
+		description: string;
 	};
+
+	/**
+	 * Configuration for node validation and description
+	 */
 	node: {
-		isValid: (value: unknown) => boolean;
-		description?: string;
+		/** Validator to check if value is a valid node */
+		isValid: (value: unknown) => value is N;
+
+		/** Human-readable description of the node type */
+		description: string;
 	};
+
+	/**
+	 * Async generator function that yields steps for a given
+	 * origin
+	 * @param origin - The origin to traverse
+	 * @param provider - The provider instance
+	 * @returns Async generator yielding Step objects
+	 */
 	steps: (
-		origin: unknown,
-		provider: AbstractProvider,
-	) => AsyncGenerator<StepState, void, unknown>;
+		origin: O,
+		provider: AbstractProvider<O, N>,
+	) => AsyncGenerator<StepState<N>, void, unknown>;
 }
 
 /**
- * Factory that returns a concrete provider constructor (subclass of AbstractProvider).
+ * Factory that returns a concrete provider constructor
+ * (subclass of AbstractProvider).
+ * @template O - Type of the origin for traversal
+ * @template N - Type of the nodes being visited
+ * @param options - Configuration for origin, node validation
+ * and steps generator
+ * @returns A new provider constructor class
+ * @throws {TypeError} If options or any required property is
+ * invalid
  */
-export function Implement(options: ImplementOptions): typeof AbstractProvider;
+export function Implement<O = unknown, N = unknown>(
+	options: ImplementOptions<O, N>,
+): typeof AbstractProvider<O, N>;
