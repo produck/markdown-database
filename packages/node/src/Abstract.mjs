@@ -260,33 +260,15 @@ export default Abstract(class Node {
 	}
 
 	[I.CHILD.REPLACE](newChild, oldChild) {
-		const oldPrevious = oldChild[I.SIBLING.PREVIOUS];
-		const oldNext = oldChild[I.SIBLING.NEXT];
+		const next = oldChild[I.SIBLING.NEXT];
 
-		newChild[I.DETACH]();
-		newChild[I.PARENT] = this;
-		newChild[I.SIBLING.PREVIOUS] = oldPrevious;
-		newChild[I.SIBLING.NEXT] = oldNext;
+		oldChild[I.DETACH]();
 
-		if (oldPrevious !== null) {
-			oldPrevious[I.SIBLING.NEXT] = newChild;
+		if (next !== null) {
+			this[I.CHILD.INSERT](newChild, next);
+		} else {
+			this[I.CHILD.APPEND](newChild);
 		}
-
-		if (oldNext !== null) {
-			oldNext[I.SIBLING.PREVIOUS] = newChild;
-		}
-
-		if (this[I.CHILD.FIRST] === oldChild) {
-			this[I.CHILD.FIRST] = newChild;
-		}
-
-		if (this[I.CHILD.LAST] === oldChild) {
-			this[I.CHILD.LAST] = newChild;
-		}
-
-		oldChild[I.PARENT] = null;
-		oldChild[I.SIBLING.PREVIOUS] = null;
-		oldChild[I.SIBLING.NEXT] = null;
 	}
 
 	replaceChild(newChild, oldChild) {
