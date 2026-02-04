@@ -191,31 +191,37 @@ export default Abstract(class Node {
 	}
 
 	[I.DETACH]() {
-		const hasParent = this[I.PARENT] !== null;
-		const hasPrevious = this[I.SIBLING.PREVIOUS] !== null;
-		const hasNext = this[I.SIBLING.NEXT] !== null;
+		const {
+			[I.PARENT]: parent,
+			[I.SIBLING.PREVIOUS]: previous,
+			[I.SIBLING.NEXT]: next,
+		} = this;
+
+		const hasParent = parent !== null;
+		const hasPrevious = previous !== null;
+		const hasNext = next !== null;
 
 		if (hasParent) {
 			if (!hasPrevious) {
-				this[I.PARENT][I.CHILD.FIRST] = this[I.SIBLING.NEXT];
+				parent[I.CHILD.FIRST] = next;
 			}
 
 			if (!hasNext) {
-				this[I.PARENT][I.CHILD.LAST] = this[I.SIBLING.PREVIOUS];
+				parent[I.CHILD.LAST] = previous;
 			}
-
-			this[I.PARENT] = null;
 		}
 
 		if (hasPrevious) {
-			this[I.SIBLING.PREVIOUS][I.SIBLING.NEXT] = this[I.SIBLING.NEXT];
-			this[I.SIBLING.PREVIOUS] = null;
+			previous[I.SIBLING.NEXT] = this[I.SIBLING.NEXT];
 		}
 
 		if (hasNext) {
-			this[I.SIBLING.NEXT][I.SIBLING.PREVIOUS] = this[I.SIBLING.PREVIOUS];
-			this[I.SIBLING.NEXT] = null;
+			next[I.SIBLING.PREVIOUS] = this[I.SIBLING.PREVIOUS];
 		}
+
+		this[I.PARENT] = null;
+		this[I.SIBLING.PREVIOUS] = null;
+		this[I.SIBLING.NEXT] = null;
 	}
 
 	[I.CHILD.APPEND](node) {
