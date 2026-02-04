@@ -589,13 +589,13 @@ describe('::Directory()', () => {
 		});
 	});
 
-	describe.skip('.removeChild()', () => {
+	describe('.removeChild()', () => {
 		it('should throw if bad directory.', () => {
 			const directory = new TestNode();
 
 			assert.throws(() => directory.removeChild(null), {
 				name: 'TypeError',
-				message: 'Invalid "args[0]", one "Node" expected.',
+				message: 'Invalid "args[0] as node", one "Node" expected.',
 			});
 		});
 
