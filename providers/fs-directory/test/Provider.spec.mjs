@@ -19,7 +19,9 @@ describe('::FSDirectoryProvider()', () => {
 			// Create directory structure
 			await fs.mkdir(path.join(rootPathname, 'aa', 'aaa'), { recursive: true });
 			await fs.mkdir(path.join(rootPathname, 'ab', 'aba'), { recursive: true });
-			await fs.mkdir(path.join(rootPathname, 'ab', 'abb', 'abba'), { recursive: true });
+			await fs.mkdir(path.join(rootPathname, 'ab', 'abb', 'abba'), {
+				recursive: true,
+			});
 			await fs.mkdir(path.join(rootPathname, 'ac'), { recursive: true });
 
 			// Create bad file
@@ -57,14 +59,69 @@ describe('::FSDirectoryProvider()', () => {
 		it('should throw error when origin is not a directory', async () => {
 			const provider = new FSDirectoryProvider();
 
-			await assert.rejects(async () => {
-				for await (const step of provider.seek(p('bad'))) {
-					void step;
-				}
-			}, {
-				name: 'Error',
-				message: /MUST be a directory/,
-			});
+			await assert.rejects(
+				async () => {
+					for await (const step of provider.seek(p('bad'))) {
+						void step;
+					}
+				},
+				{
+					name: 'Error',
+					message: /MUST be a directory/,
+				},
+			);
+		});
+	});
+
+	describe('.isOrigin()', () => {
+		it('should accept absolute path', () => {
+			assert.equal(FSDirectoryProvider.isOrigin('/absolute/path'), true);
+		});
+
+		it('should reject relative path', () => {
+			assert.equal(FSDirectoryProvider.isOrigin('relative/path'), false);
+		});
+
+		it('should reject non-string values', () => {
+			assert.equal(FSDirectoryProvider.isOrigin(null), false);
+			assert.equal(FSDirectoryProvider.isOrigin(undefined), false);
+			assert.equal(FSDirectoryProvider.isOrigin(123), false);
+			assert.equal(FSDirectoryProvider.isOrigin({}), false);
+		});
+	});
+
+	describe('.isNode()', () => {
+		it('should accept object with origin property as absolute path', () => {
+			assert.equal(
+				FSDirectoryProvider.isNode({ origin: '/absolute/path' }),
+				true,
+			);
+		});
+
+		it('should reject object with relative path origin', () => {
+			assert.equal(
+				FSDirectoryProvider.isNode({ origin: 'relative/path' }),
+				false,
+			);
+		});
+
+		it('should reject object without origin property', () => {
+			assert.equal(FSDirectoryProvider.isNode({ path: '/some/path' }), false);
+			assert.equal(FSDirectoryProvider.isNode({}), false);
+		});
+
+		it('should reject object with multiple properties', () => {
+			assert.equal(
+				FSDirectoryProvider.isNode({ origin: '/path', extra: 'property' }),
+				false,
+			);
+		});
+
+		it('should reject non-object values', () => {
+			assert.equal(FSDirectoryProvider.isNode(null), false);
+			assert.equal(FSDirectoryProvider.isNode(undefined), false);
+			assert.equal(FSDirectoryProvider.isNode('string'), false);
+			assert.equal(FSDirectoryProvider.isNode(123), false);
 		});
 	});
 });
