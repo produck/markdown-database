@@ -59,7 +59,7 @@ class MockNodeProvider extends AbstractProvider {
 	}
 }
 
-	describe('::AbstractNodeProvider()', () => {
+describe('::AbstractNodeProvider()', () => {
 	describe('new()', () => {
 		it('should create a provider.', () => {
 			assert.ok(new MockNodeProvider());

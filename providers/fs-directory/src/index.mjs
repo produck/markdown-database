@@ -1,2 +1,1 @@
-export { default as FSDirectoryProvider } from './Abstract.mjs';
-export { Implement } from './Implement.mjs';
+export { default } from './Provider.mjs';
