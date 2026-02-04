@@ -53,5 +53,18 @@ describe('::FSDirectoryProvider()', () => {
 				{ origin: p(), action: false },
 			]);
 		});
+
+		it('should throw error when origin is not a directory', async () => {
+			const provider = new FSDirectoryProvider();
+
+			await assert.rejects(async () => {
+				for await (const step of provider.seek(p('bad'))) {
+					void step;
+				}
+			}, {
+				name: 'Error',
+				message: /MUST be a directory/,
+			});
+		});
 	});
 });
