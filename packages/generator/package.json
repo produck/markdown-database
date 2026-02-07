@@ -26,7 +26,8 @@
 	},
 	"dependencies": {
 		"@produck/cellulose-node": "*",
-		"@produck/es-abstract": "^0.3.0",
-		"@produck/type-error": "^0.1.1"
+		"@produck/cellulose-provider": "*",
+		"@produck/es-abstract": "^0.3.1",
+		"@produck/type-error": "^0.1.2"
 	}
 }
