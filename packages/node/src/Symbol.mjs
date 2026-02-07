@@ -46,11 +46,15 @@ export const _I = {
 
 export const _S = {
 	NAME: {
-		IS_VALID: Symbol('._isValidName()'),
-		DESCRIPTION: Symbol('._nameDescription'),
+		IS_VALID: Symbol('::_isValidName()'),
+		DESCRIPTION: Symbol('::_nameDescription'),
 	},
 	DATA: {
-		IS_VALID: Symbol('._isValidData'),
-		DESCRIPTION: Symbol('._nameDescription'),
+		IS_VALID: Symbol('::_isValidData'),
+		DESCRIPTION: Symbol('::_nameDescription'),
 	},
+};
+
+export const S = {
+	FLAG: Symbol('::flag'),
 };

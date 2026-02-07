@@ -271,3 +271,13 @@ export function Implement<
  * traversal methods
  */
 export const AbstractNode: NodeConstructor;
+
+/**
+ * Check if a value is a valid node constructor
+ * @param value - The value to check
+ * @returns true if value is a node constructor created
+ * by Implement() or is AbstractNode
+ */
+export function isNodeConstructor(
+	value: unknown,
+): value is NodeConstructor;

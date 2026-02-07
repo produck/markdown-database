@@ -2,7 +2,9 @@ import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { ENTER, LEAVE } from '../src/Action.mjs';
-import AbstractNode from '../src/Abstract.mjs';
+import AbstractNode, {
+	isNodeConstructor,
+} from '../src/Abstract.mjs';
 import { _I, _S } from '../src/Symbol.mjs';
 
 class TestNode extends AbstractNode {
@@ -901,5 +903,46 @@ describe('::Node()', () => {
 			assert.equal(b.nextSibling, c);
 			assert.equal(c.previousSibling, b);
 		});
+	});
+});
+
+describe('::isNodeConstructor()', () => {
+	it('should return true for AbstractNode.', () => {
+		assert.equal(isNodeConstructor(AbstractNode), true);
+	});
+
+	it('should return false for null.', () => {
+		assert.equal(isNodeConstructor(null), false);
+	});
+
+	it('should return false for undefined.', () => {
+		assert.equal(isNodeConstructor(undefined), false);
+	});
+
+	it('should return false for plain object.', () => {
+		assert.equal(isNodeConstructor({}), false);
+	});
+
+	it('should return false for plain function.', () => {
+		assert.equal(isNodeConstructor(() => {}), false);
+	});
+
+	it('should return false for string.', () => {
+		assert.equal(isNodeConstructor('Node'), false);
+	});
+
+	it('should return true for custom node subclass.', () => {
+		class CustomNode extends AbstractNode {}
+
+		assert.equal(isNodeConstructor(CustomNode), true);
+	});
+
+	it('should return true for multiple ' +
+		'custom node subclasses.', () => {
+		class CustomNode1 extends AbstractNode {}
+		class CustomNode2 extends AbstractNode {}
+
+		assert.equal(isNodeConstructor(CustomNode1), true);
+		assert.equal(isNodeConstructor(CustomNode2), true);
 	});
 });
