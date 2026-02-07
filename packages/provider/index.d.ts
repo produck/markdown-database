@@ -1,4 +1,15 @@
 /**
+ * ACTION namespace - constants for step action types
+ */
+export namespace ACTION {
+	/** Symbol constant for entering a node */
+	export const ENTER: true;
+
+	/** Symbol constant for leaving a node */
+	export const LEAVE: false;
+}
+
+/**
  * The shape of a yielded step state from provider.seek()
  * @template N - Type of the node being visited
  */
@@ -16,7 +27,7 @@ export interface StepState<N = unknown> {
  * type-safety of public API.
  * @template N - Type of the node
  */
-interface Step<N = unknown> {
+export interface Step<N = unknown> {
 	/** Get the current step state with node and action */
 	readonly state: StepState<N>;
 
@@ -29,15 +40,6 @@ interface Step<N = unknown> {
 	/** Set action to LEAVE (false) */
 	leave(): this;
 }
-
-/**
- * Constructor for Step instances
- */
-interface StepConstructor {
-	new <N = unknown>(node: N): Step<N>;
-}
-
-declare const Step: StepConstructor;
 
 /** Symbols used to reference private contract members */
 export const _I: {
@@ -121,9 +123,16 @@ export interface AbstractProviderConstructor<O = unknown, N = unknown> {
 	};
 }
 
-declare const AbstractProvider: AbstractProviderConstructor;
+export const AbstractProvider: AbstractProviderConstructor;
 
-export default AbstractProvider;
+/**
+ * Check if a value is a valid provider constructor
+ * @param value - The value to check
+ * @returns true if value is a provider constructor created by Implement()
+ */
+export function isProviderConstructor(
+	value: unknown,
+): value is AbstractProviderConstructor;
 
 /**
  * Options accepted by `Implement()`.

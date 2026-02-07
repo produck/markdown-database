@@ -1,7 +1,11 @@
 import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import AbstractProvider, { _I, _S } from '../src/Abstract.mjs';
+import AbstractProvider, {
+	_I,
+	_S,
+	isProviderConstructor,
+} from '../src/Abstract.mjs';
 
 const root = {
 	name: 'root',
@@ -35,8 +39,8 @@ class MockNodeProvider extends AbstractProvider {
 
 		yield step.enter();
 
-		for await (const child of (origin.children ?? [])) {
-			yield * this[_I.STEPS](child);
+		for await (const child of origin.children ?? []) {
+			yield* this[_I.STEPS](child);
 		}
 
 		yield step.leave();
@@ -217,5 +221,49 @@ describe('::AbstractNodeProvider()', () => {
 				message: 'Bad Implementation, steps NOT leave.',
 			});
 		});
+	});
+});
+
+describe('::isProviderConstructor()', () => {
+	it('should return true for AbstractProvider.', () => {
+		assert.equal(isProviderConstructor(AbstractProvider), true);
+	});
+
+	it('should return false for null.', () => {
+		assert.equal(isProviderConstructor(null), false);
+	});
+
+	it('should return false for undefined.', () => {
+		assert.equal(isProviderConstructor(undefined), false);
+	});
+
+	it('should return false for plain object.', () => {
+		assert.equal(isProviderConstructor({}), false);
+	});
+
+	it('should return false for plain function.', () => {
+		assert.equal(
+			isProviderConstructor(() => {}),
+			false,
+		);
+	});
+
+	it('should return false for string.', () => {
+		assert.equal(isProviderConstructor('Provider'), false);
+	});
+
+	it('should return true for custom provider subclass.', () => {
+		class CustomProvider extends AbstractProvider {}
+
+		assert.equal(isProviderConstructor(CustomProvider), true);
+	});
+
+	it('should return true for multiple custom provider subclasses.', () => {
+		class CustomProvider1 extends AbstractProvider {}
+
+		class CustomProvider2 extends AbstractProvider {}
+
+		assert.equal(isProviderConstructor(CustomProvider1), true);
+		assert.equal(isProviderConstructor(CustomProvider2), true);
 	});
 });

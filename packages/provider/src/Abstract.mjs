@@ -15,13 +15,17 @@ export const _I = {
 
 export const _S = {
 	ORIGIN: {
-		IS_VALID: Symbol('._isValidOrigin()'),
-		DESCRIPTION: Symbol('._originDescription'),
+		IS_VALID: Symbol('::_isValidOrigin()'),
+		DESCRIPTION: Symbol('::_originDescription'),
 	},
 	NODE: {
-		IS_VALID: Symbol('._isValidNode()'),
-		DESCRIPTION: Symbol('._nodeDescription'),
+		IS_VALID: Symbol('::_isValidNode()'),
+		DESCRIPTION: Symbol('::_nodeDescription'),
 	},
+};
+
+const S = {
+	FLAG: Symbol('::flag'),
 };
 
 const Assert = {
@@ -97,6 +101,8 @@ export default Abstract(class CelluloseProvider {
 			node: this[_S.NODE.DESCRIPTION],
 		};
 	}
+
+	static [S.FLAG] = true;
 },
 ...[
 	Abstract({
@@ -109,3 +115,7 @@ export default Abstract(class CelluloseProvider {
 		[_S.NODE.DESCRIPTION]: M.String,
 	}),
 ]);
+
+export function isProviderConstructor(value) {
+	return typeof value === 'function' && S.FLAG in value;
+}
