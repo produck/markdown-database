@@ -71,6 +71,37 @@ describe('::FSDirectoryProvider()', () => {
 				},
 			);
 		});
+
+		it('should throw error when pathname validation fails with async false', async () => {
+			const provider = new FSDirectoryProvider();
+			provider.definePathname(async () => false, 'ValidationFailed');
+
+			await assert.rejects(
+				async () => {
+					for await (const step of provider.seek(rootPathname)) {
+						void step;
+					}
+				},
+				{
+					name: 'Error',
+					message: /ValidationFailed/,
+				},
+			);
+		});
+
+		it('should accept all paths when validator returns async true', async () => {
+			const provider = new FSDirectoryProvider();
+			provider.definePathname(async () => true, 'AllowAll');
+
+			const visited = [];
+
+			for await (const step of provider.seek(rootPathname)) {
+				visited.push({ origin: step.node.origin, action: step.action });
+			}
+
+			// Should traverse successfully
+			assert.ok(visited.length > 0);
+		});
 	});
 
 	describe('.isOrigin()', () => {
@@ -122,6 +153,65 @@ describe('::FSDirectoryProvider()', () => {
 			assert.equal(FSDirectoryProvider.isNode(undefined), false);
 			assert.equal(FSDirectoryProvider.isNode('string'), false);
 			assert.equal(FSDirectoryProvider.isNode(123), false);
+		});
+	});
+
+	describe('.definePathname()', () => {
+		it('should accept valid validator function and description string', () => {
+			const provider = new FSDirectoryProvider();
+			const validator = (value) => typeof value === 'string';
+			const description = 'CustomPathname';
+
+			assert.doesNotThrow(() => {
+				provider.definePathname(validator, description);
+			});
+		});
+
+		it('should throw TypeError when validator is not a function', () => {
+			const provider = new FSDirectoryProvider();
+
+			assert.throws(
+				() => provider.definePathname('not-a-function', 'description'),
+				{
+					name: 'TypeError',
+					message: /args\[0\] as validator/,
+				},
+			);
+		});
+
+		it('should throw TypeError when description is not a string', () => {
+			const provider = new FSDirectoryProvider();
+			const validator = () => true;
+
+			assert.throws(
+				() => provider.definePathname(validator, 123),
+				{
+					name: 'TypeError',
+					message: /args\[1\] as description/,
+				},
+			);
+		});
+
+		it('should throw TypeError when description is not a string (null)', () => {
+			const provider = new FSDirectoryProvider();
+			const validator = () => true;
+
+			assert.throws(() => provider.definePathname(validator, null), {
+				name: 'TypeError',
+				message: /args\[1\] as description/,
+			});
+		});
+
+		it('should throw TypeError when both arguments are invalid', () => {
+			const provider = new FSDirectoryProvider();
+
+			assert.throws(
+				() => provider.definePathname(null, 123),
+				{
+					name: 'TypeError',
+					message: /args\[0\] as validator/,
+				},
+			);
 		});
 	});
 });

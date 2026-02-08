@@ -38,7 +38,11 @@ export default class FSDirectoryProvider extends Provider.Implement({
 		description: 'ObjectWithOrigin',
 	},
 	async *steps(pathname, provider) {
-		const { [I.PATHNAME.VALID]: isValidPathname } = provider;
+		const {
+			[I.PATHNAME.VALID]: isValidPathname,
+			[I.PATHNAME.DESCRIPTION]: pathnameDescription
+		} = provider;
+
 		const stat = await fs.promises.stat(pathname);
 
 		if (!stat.isDirectory()) {
@@ -46,8 +50,8 @@ export default class FSDirectoryProvider extends Provider.Implement({
 		}
 
 		yield *(async function *visit(origin) {
-			if (await !isValidPathname()) {
-				throw new Error(this[I.PATHNAME.DESCRIPTION]);
+			if (!(await isValidPathname(origin))) {
+				throw new Error(pathnameDescription);
 			}
 
 			const step = provider.createStep({ origin });
@@ -67,7 +71,7 @@ export default class FSDirectoryProvider extends Provider.Implement({
 	},
 }) {
 	[I.PATHNAME.VALID] = () => true;
-	[I.PATHNAME.DESCRIPTION] = () => true;
+	[I.PATHNAME.DESCRIPTION] = 'CustomPathname';
 
 	definePathname(validator, description) {
 		if (typeof validator !== 'function') {
