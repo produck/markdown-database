@@ -3,78 +3,157 @@ import { describe, it } from 'node:test';
 import StringJsonNode from '../src/Node.mjs';
 
 describe('::StringJsonNode()', () => {
-	it('should create instance', () => {
-		const node = new StringJsonNode();
+	describe('new()', () => {
+		it('should create instance', () => {
+			const node = new StringJsonNode();
 
-		assert.ok(node instanceof StringJsonNode);
+			assert.ok(node instanceof StringJsonNode);
+		});
+
+		it('should have default name and data', () => {
+			const node = new StringJsonNode();
+
+			assert.equal(node.name, '');
+			assert.equal(node.data, null);
+		});
 	});
 
-	it('should have default name and data', () => {
-		const node = new StringJsonNode();
+	describe('.name', () => {
+		it('should be a string', () => {
+			const node = new StringJsonNode();
 
-		assert.equal(node.name, '');
-		assert.equal(node.data, null);
+			node.name = 'test';
+			assert.strictEqual(typeof node.name, 'string');
+			assert.strictEqual(node.name, 'test');
+		});
+
+		it('should accept any string value', () => {
+			const node = new StringJsonNode();
+
+			assert.strictEqual((node.name = '', node.name), '');
+			assert.strictEqual((node.name = 'valid-name', node.name), 'valid-name');
+			assert.strictEqual((node.name = 'with spaces', node.name), 'with spaces');
+		});
+
+		it('should enforce unique name among siblings', () => {
+			const [a, b, c] = new Array(3).fill(null).map(() => new StringJsonNode());
+
+			a.name = 'a';
+			b.name = 'b';
+			c.name = 'c';
+
+			a.appendChild(b);
+			a.appendChild(c);
+
+			assert.throws(() => c.name = 'b', {
+				message: /A sibling node named "b" already exists/,
+			});
+
+			assert.strictEqual(c.name, 'c');
+		});
 	});
 
-	it('should validate name as string', () => {
-		const node = new StringJsonNode();
+	describe('.data', () => {
+		it('should have default value of null', () => {
+			assert.equal(new StringJsonNode().data, null);
+		});
 
-		assert.strictEqual(typeof node.name, 'string');
-	});
+		it('should accept primitive values', () => {
+			const node = new StringJsonNode();
 
-	it('should validate data as JSON serializable', () => {
-		const node = new StringJsonNode();
+			for (const v of [123, 0, -42.5]) {
+				node.data = v;
+				assert.strictEqual(node.data, v);
+			}
 
-		// Valid values: null
-		node.data = null;
-		assert.strictEqual(node.data, null);
+			for (const v of [true, false]) {
+				node.data = v;
+				assert.strictEqual(node.data, v);
+			}
 
-		// Valid values: number
-		node.data = 123;
-		assert.strictEqual(node.data, 123);
+			for (const v of ['string', '']) {
+				node.data = v;
+				assert.strictEqual(node.data, v);
 
-		node.data = 0;
-		assert.strictEqual(node.data, 0);
+			}
 
-		node.data = -42.5;
-		assert.strictEqual(node.data, -42.5);
+			node.data = null;
+			assert.strictEqual(node.data, null);
+		});
 
-		// Valid values: boolean
-		node.data = true;
-		assert.strictEqual(node.data, true);
+		it('should accept arrays', () => {
+			const node = new StringJsonNode();
 
-		node.data = false;
-		assert.strictEqual(node.data, false);
+			for (const v of [[], [1, 2, 3], [null, 'text', 42, true]]) {
+				node.data = v;
+				assert.deepEqual(node.data, v);
+			}
+		});
 
-		// Valid values: string
-		node.data = 'string';
-		assert.strictEqual(node.data, 'string');
+		it('should accept plain objects', () => {
+			const node = new StringJsonNode();
 
-		node.data = '';
-		assert.strictEqual(node.data, '');
+			for (const v of [
+				{}, { key: 'value' },
+				{ a: null, b: 123, c: true, d: 'text' },
+			]) {
+				node.data = v;
+				assert.deepEqual(node.data, v);
+			}
+		});
 
-		// Valid values: plain object
-		node.data = { key: 'value' };
-		assert.deepEqual(node.data, { key: 'value' });
+		it('should accept nested structures', () => {
+			const node = new StringJsonNode();
+			const testCases = [
+				{ nested: { count: 42, active: true }, items: [1, 'a', null] },
+				[1, { name: 'obj' }, [1, 2]],
+				{ e: {}, f: [] },
+			];
 
-		node.data = { nested: { count: 42, active: true }, items: [1, 'a', null] };
-		assert.deepEqual(node.data, { nested: { count: 42, active: true }, items: [1, 'a', null] });
+			for (const v of testCases) {
+				node.data = v;
+				assert.deepEqual(node.data, v);
+			}
+		});
 
-		node.data = { a: null, b: 123, c: true, d: 'text', e: {}, f: [] };
-		assert.deepEqual(node.data, { a: null, b: 123, c: true, d: 'text', e: {}, f: [] });
+		it('should reject invalid types', () => {
+			const node = new StringJsonNode();
 
-		// Valid values: array
-		node.data = [1, 2, 3];
-		assert.deepEqual(node.data, [1, 2, 3]);
+			for (const v of [
+				() => {},
+				new Date(),
+				Symbol('test'),
+				undefined,
+				new (class { constructor() { this.value = 42; } })(),
+			]) {
+				assert.throws(() => { node.data = v; }, /SimpleObject/);
+			}
+		});
 
-		node.data = [null, 'text', 42, true, { name: 'obj' }, [1, 2]];
-		assert.deepEqual(node.data, [null, 'text', 42, true, { name: 'obj' }, [1, 2]]);
+		it('should reject objects with invalid properties', () => {
+			const node = new StringJsonNode();
 
-		// Valid values: empty object and array
-		node.data = {};
-		assert.deepEqual(node.data, {});
+			// Objects with invalid property values
+			for (const v of [
+				{ valid: 1, invalid: () => {} },
+				{ valid: 'text', invalid: new Date() },
+				{ nested: { valid: 1, invalid: Symbol('test') } },
+				{ valid: 1, invalid: undefined },
+				{ a: 1, b: 2, c: new (class {})() },
+			]) {
+				assert.throws(() => { node.data = v; }, /SimpleObject/);
+			}
 
-		node.data = [];
-		assert.deepEqual(node.data, []);
+			// Arrays with invalid elements
+			for (const v of [
+				[1, 2, () => {}],
+				['a', 'b', new Date()],
+				[null, true, Symbol('test')],
+				[{ valid: 1 }, undefined],
+				[[1, 2], 3, new (class {})()],
+			]) {
+				assert.throws(() => { node.data = v; }, /SimpleObject/);
+			}
+		});
 	});
 });
