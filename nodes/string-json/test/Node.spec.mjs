@@ -1,5 +1,6 @@
 import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+
 import StringJsonNode from '../src/Node.mjs';
 
 describe('::StringJsonNode()', () => {
@@ -126,7 +127,7 @@ describe('::StringJsonNode()', () => {
 				undefined,
 				new (class { constructor() { this.value = 42; } })(),
 			]) {
-				assert.throws(() => { node.data = v; }, /SimpleObject/);
+				assert.throws(() => { node.data = v; }, /JsonValue/);
 			}
 		});
 
@@ -141,7 +142,7 @@ describe('::StringJsonNode()', () => {
 				{ valid: 1, invalid: undefined },
 				{ a: 1, b: 2, c: new (class {})() },
 			]) {
-				assert.throws(() => { node.data = v; }, /SimpleObject/);
+				assert.throws(() => { node.data = v; }, /JsonValue/);
 			}
 
 			// Arrays with invalid elements
@@ -152,7 +153,7 @@ describe('::StringJsonNode()', () => {
 				[{ valid: 1 }, undefined],
 				[[1, 2], 3, new (class {})()],
 			]) {
-				assert.throws(() => { node.data = v; }, /SimpleObject/);
+				assert.throws(() => { node.data = v; }, /JsonValue/);
 			}
 		});
 	});

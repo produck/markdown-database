@@ -39,7 +39,7 @@ export default class StringJsonNode extends Implement({
 	},
 	data: {
 		init: () => null,
-		description: 'SimpleObject',
+		description: 'JsonValue',
 		isValid: isValidData,
 	},
 }) {
