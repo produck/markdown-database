@@ -23,6 +23,7 @@
 		"packages/node",
 		"packages/transcriber",
 		"packages/provider",
-		"providers/fs-directory"
+		"providers/fs-directory",
+		"nodes/string-json"
 	]
 }

@@ -1,0 +1,35 @@
+{
+	"name": "@produck/cellulose-node-string-json",
+	"version": "0.0.0",
+	"description": "",
+	"license": "MIT",
+	"author": "ChaosLee",
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"main": "src/index.mjs",
+	"types": "index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"import": "./src/index.mjs"
+		}
+	},
+	"files": [
+		"src",
+		"index.d.ts"
+	],
+	"scripts": {
+		"test": "node ./test/index.mjs",
+		"test:only": "node --test-only ./test/index.mjs"
+	},
+	"dependencies": {
+		"@produck/cellulose-node": "*",
+		"@produck/type-error": "^0.1.2",
+		"is-plain-obj": "^4.1.0"
+	},
+	"devDependencies": {
+		"@types/is-plain-obj": "^1.1.0"
+	}
+}
