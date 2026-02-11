@@ -2,7 +2,7 @@ import { ThrowTypeError } from '@produck/type-error';
 import Abstract, { Member as M } from '@produck/es-abstract';
 
 import * as ACTION from './Action.mjs';
-import { I, S, _I, _S } from './Symbol.mjs';
+import { I, S, _I, _S } from './Symbol/index.mjs';
 
 function ThrowError(message) {
 	throw new Error(message);

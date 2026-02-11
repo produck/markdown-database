@@ -3,30 +3,7 @@ import Abstract, { Member as M } from '@produck/es-abstract';
 
 import * as ACTION from './Action.mjs';
 import { Step, isStep, $I } from './Step.mjs';
-
-const I = {
-	CONSTRUCTOR: Symbol('.#constructor'),
-	SEEK: Symbol('.#seek()'),
-};
-
-export const _I = {
-	STEPS: Symbol('._steps()'),
-};
-
-export const _S = {
-	ORIGIN: {
-		IS_VALID: Symbol('::_isValidOrigin()'),
-		DESCRIPTION: Symbol('::_originDescription'),
-	},
-	NODE: {
-		IS_VALID: Symbol('::_isValidNode()'),
-		DESCRIPTION: Symbol('::_nodeDescription'),
-	},
-};
-
-const S = {
-	FLAG: Symbol('::flag'),
-};
+import { I, _I, _S, S } from './Symbol/index.mjs';
 
 const Assert = {
 	Step: AssertionChecker(isStep, 'Step'),
@@ -77,11 +54,10 @@ export default Abstract(class CelluloseProvider {
 	}
 
 	seek(origin) {
-		if (!this[I.CONSTRUCTOR].isOrigin(origin)) {
-			ThrowTypeError(
-				'args[0] as origin',
-				this[I.CONSTRUCTOR][_S.ORIGIN.DESCRIPTION],
-			);
+		const { [I.CONSTRUCTOR]: constructor } = this;
+
+		if (!constructor.isOrigin(origin)) {
+			ThrowTypeError('args[0] as origin', constructor[_S.ORIGIN.DESCRIPTION]);
 		}
 
 		return this[I.SEEK](origin);

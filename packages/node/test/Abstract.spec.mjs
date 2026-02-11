@@ -2,10 +2,8 @@ import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { ENTER, LEAVE } from '../src/Action.mjs';
-import AbstractNode, {
-	isNodeConstructor,
-} from '../src/Abstract.mjs';
-import { _I, _S } from '../src/Symbol.mjs';
+import AbstractNode, { isNodeConstructor } from '../src/Abstract.mjs';
+import { _I, _S } from '../src/Symbol/index.mjs';
 
 class TestNode extends AbstractNode {
 	[_I.NAME.INIT]() {

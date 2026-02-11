@@ -1,11 +1,10 @@
 import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import AbstractProvider, {
-	_I,
-	_S,
+import {
+	AbstractProvider, _I, _S,
 	isProviderConstructor,
-} from '../src/Abstract.mjs';
+} from '../src/index.mjs';
 
 const root = {
 	name: 'root',

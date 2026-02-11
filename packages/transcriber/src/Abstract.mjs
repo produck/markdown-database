@@ -2,22 +2,27 @@ import Abstract, { Member as M } from '@produck/es-abstract';
 import { ACTION } from '@produck/cellulose-provider';
 
 import * as Parser from './Parser.mjs';
-import { I, _I, _S } from './Symbol.mjs';
+import { I, _I, _S } from './Symbol/index.mjs';
 
 export default Abstract(class Transcriber {
-	[I.CONSTRUCTOR] = new.target;
+	[I.CONSTRUCTOR] = Transcriber;
+
+	constructor() {
+		this[I.CONSTRUCTOR] = new.target;
+	}
+
 	[I.PROVIDER] = new this[I.CONSTRUCTOR][_S.CONSTRUCTOR.PROVIDER]();
 
 	get provider() {
 		return this[I.PROVIDER];
 	}
 
-	async transcribe() {
+	async transcribe(origin) {
 		const TargetNode = this[I.CONSTRUCTOR][_S.CONSTRUCTOR.NODE];
 		const head = new TargetNode();
 		const trace = [head];
 
-		for await (const step of this[I.PROVIDER].seek()) {
+		for await (const step of this[I.PROVIDER].seek(origin)) {
 			if (step.action === ACTION.ENTER) {
 				const child = new TargetNode();
 
@@ -37,6 +42,10 @@ export default Abstract(class Transcriber {
 
 	get Node() {
 		return this[_S.CONSTRUCTOR.NODE];
+	}
+
+	get Provider() {
+		return this[_S.CONSTRUCTOR.PROVIDER];
 	}
 }, ...[
 	Abstract({
