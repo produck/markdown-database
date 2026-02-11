@@ -15,50 +15,56 @@ type ActionSymbol = typeof ACTION.ENTER | typeof ACTION.LEAVE;
 /**
  * Instance symbols for private node properties and methods
  */
-export const _I: {
+export namespace _I {
 	/**
 	 * Name property initialization and operations
 	 */
-	NAME: {
+	export namespace NAME {
 		/** Symbol for name initialization method */
-		readonly INIT: unique symbol;
+		export const INIT: unique symbol;
+
 		/** Symbol for name equality comparison method */
-		readonly EQUAL: unique symbol;
+		export const EQUAL: unique symbol;
+
 		/** Symbol for name to string conversion method */
-		readonly TO_STRING: unique symbol;
-	};
+		export const TO_STRING: unique symbol;
+	}
+
 	/**
 	 * Data property initialization
 	 */
-	DATA: {
+	export namespace DATA {
 		/** Symbol for data initialization method */
-		readonly INIT: unique symbol;
-	};
-};
+		export const INIT: unique symbol;
+	}
+}
 
 /**
  * Static symbols for private class methods and properties
  */
-export const _S: {
+export namespace _S {
 	/**
 	 * Name property validation and description
 	 */
-	NAME: {
+	export namespace NAME {
 		/** Symbol for name validation method */
-		readonly IS_VALID: unique symbol;
+		export const IS_VALID: unique symbol;
+
 		/** Symbol for name property description */
-		readonly DESCRIPTION: unique symbol;
-	};
+		export const DESCRIPTION: unique symbol;
+	}
+
 	/**
 	 * Data property validation and description
 	 */
-	DATA: {
+	export namespace DATA {
 		/** Symbol for data validation method */
-		readonly IS_VALID: unique symbol;
+		export const IS_VALID: unique symbol;
+
 		/** Symbol for data property description */
-		readonly DESCRIPTION: unique symbol;
-	};
-};
+		export const DESCRIPTION: unique symbol;
+	}
+}
 
 /**
  * Represents a step in node tree traversal with action type

@@ -42,27 +42,30 @@ export interface Step<N = unknown> {
 }
 
 /** Symbols used to reference private contract members */
-export const _I: {
+export namespace _I {
 	/** Symbol for the async generator steps method */
-	readonly STEPS: unique symbol;
-};
+	export const STEPS: unique symbol;
+}
 
-export const _S: {
+export namespace _S {
 	/** Static symbols for origin validation */
-	readonly ORIGIN: {
+	export namespace ORIGIN {
 		/** Symbol for origin validator function */
-		readonly IS_VALID: unique symbol;
+		export const IS_VALID: unique symbol;
+
 		/** Symbol for origin description */
-		readonly DESCRIPTION: unique symbol;
-	};
+		export const DESCRIPTION: unique symbol;
+	}
+
 	/** Static symbols for node validation */
-	readonly NODE: {
+	export namespace NODE {
 		/** Symbol for node validator function */
-		readonly IS_VALID: unique symbol;
+		export const IS_VALID: unique symbol;
+
 		/** Symbol for node description */
-		readonly DESCRIPTION: unique symbol;
-	};
-};
+		export const DESCRIPTION: unique symbol;
+	}
+}
 
 /**
  * Main abstract provider class exported as default.
