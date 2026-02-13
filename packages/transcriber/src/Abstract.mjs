@@ -6,12 +6,14 @@ import { I, _I, _S } from './Symbol/index.mjs';
 
 export default Abstract(class Transcriber {
 	[I.CONSTRUCTOR] = Transcriber;
+	[I.PROVIDER] = null;
 
 	constructor() {
-		this[I.CONSTRUCTOR] = new.target;
-	}
+		const constructor = new.target;
 
-	[I.PROVIDER] = new this[I.CONSTRUCTOR][_S.CONSTRUCTOR.PROVIDER]();
+		this[I.CONSTRUCTOR] = constructor;
+		this[I.PROVIDER] = new constructor[_S.CONSTRUCTOR.PROVIDER]();
+	}
 
 	get provider() {
 		return this[I.PROVIDER];
@@ -27,9 +29,9 @@ export default Abstract(class Transcriber {
 				const child = new TargetNode();
 
 				child.name = await this[_I.PARSE.NAME](step.node);
-				child.data = await this[_I.PARSE.DATA](step.node, name);
+				child.data = await this[_I.PARSE.DATA](step.node, child.name);
 				trace.at(-1).appendChild(child);
-				trace.push(step);
+				trace.push(child);
 			}
 
 			if (step.action === ACTION.LEAVE) {
@@ -40,11 +42,11 @@ export default Abstract(class Transcriber {
 		return head.firstChild;
 	}
 
-	get Node() {
+	static get Node() {
 		return this[_S.CONSTRUCTOR.NODE];
 	}
 
-	get Provider() {
+	static get Provider() {
 		return this[_S.CONSTRUCTOR.PROVIDER];
 	}
 }, ...[
