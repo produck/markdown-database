@@ -20,10 +20,10 @@
 		"typescript-eslint": "^8.55.0"
 	},
 	"workspaces": [
-		"packages/node",
-		"packages/transcriber",
-		"packages/provider",
-		"providers/fs-directory",
-		"nodes/string-json"
+		"packages/cellulose/node",
+		"packages/cellulose/transcriber",
+		"packages/cellulose/provider",
+		"packages/provider/fs-directory",
+		"packages/node/string-json"
 	]
 }
