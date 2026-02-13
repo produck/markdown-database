@@ -7,11 +7,11 @@ import AbstractTranscriber from '../src/Abstract.mjs';
 import { _I, _S } from '../src/Symbol/index.mjs';
 
 class TestTranscriber extends AbstractTranscriber {
-	[_I.PARSE.NAME](node) {
+	[_I.TRANSFORM.NAME](node) {
 		return node.name;
 	}
 
-	[_I.PARSE.DATA]() {
+	[_I.TRANSFORM.DATA]() {
 		return null;
 	}
 

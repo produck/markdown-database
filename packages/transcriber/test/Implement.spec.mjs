@@ -9,7 +9,7 @@ function FullOptions() {
 	return {
 		node: MockNode,
 		provider: MockProvider,
-		parser: {
+		transformer: {
 			name: (node) => node.name,
 			data: () => null,
 		},
@@ -68,36 +68,36 @@ describe('::Implement()', () => {
 		});
 	});
 
-	it('should throw if bad "args[0].parser".', () => {
+	it('should throw if bad "args[0].transformer".', () => {
 		const sample = FullOptions();
 
-		sample.parser = null;
+		sample.transformer = null;
 
 		assert.throws(() => Implement(sample), {
 			name: 'TypeError',
-			message: 'Invalid "args[0].parser", one "plain object" expected.',
+			message: 'Invalid "args[0].transformer", one "plain object" expected.',
 		});
 	});
 
-	it('should throw if bad "args[0].parser.name".', () => {
+	it('should throw if bad "args[0].transformer.name".', () => {
 		const sample = FullOptions();
 
-		sample.parser.name = null;
+		sample.transformer.name = null;
 
 		assert.throws(() => Implement(sample), {
 			name: 'TypeError',
-			message: 'Invalid "args[0].parser.name", one "function" expected.',
+			message: 'Invalid "args[0].transformer.name", one "function" expected.',
 		});
 	});
 
-	it('should throw if bad "args[0].parser.data".', () => {
+	it('should throw if bad "args[0].transformer.data".', () => {
 		const sample = FullOptions();
 
-		sample.parser.data = null;
+		sample.transformer.data = null;
 
 		assert.throws(() => Implement(sample), {
 			name: 'TypeError',
-			message: 'Invalid "args[0].parser.data", one "function" expected.',
+			message: 'Invalid "args[0].transformer.data", one "function" expected.',
 		});
 	});
 
@@ -133,12 +133,12 @@ describe('::Implement()', () => {
 		assert.equal(root.lastChild.name, 'b');
 	});
 
-	it('should pass node and name to parser.data.', async () => {
+	it('should pass node and name to transformer.data.', async () => {
 		const received = [];
 
 		const sample = FullOptions();
 
-		sample.parser.data = (node, name) => {
+		sample.transformer.data = (node, name) => {
 			received.push({ node, name });
 
 			return null;

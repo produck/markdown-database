@@ -9,16 +9,16 @@ import {
  */
 export namespace _I {
 	/**
-	 * Parser method symbols
+	 * Transformer method symbols
 	 */
-	export namespace PARSE {
-		/** Symbol for the name parsing method */
+	export namespace TRANSFORM {
+		/** Symbol for the name transform method */
 		export const NAME: unique symbol;
 
-		/** Symbol for the data parsing method */
+		/** Symbol for the data transform method */
 		export const DATA: unique symbol;
 
-		/** Symbol for parser description */
+		/** Symbol for transformer description */
 		export const DESCRIPTION: unique symbol;
 	}
 }
@@ -42,7 +42,7 @@ export namespace _S {
 /**
  * Abstract transcriber instance interface.
  * Implementations extend this class and provide methods
- * keyed by `_I.PARSE.NAME` and `_I.PARSE.DATA`.
+ * keyed by `_I.TRANSFORM.NAME` and `_I.TRANSFORM.DATA`.
  * @template O - Type of the origin for traversal
  * @template N - Type of the node's name
  * @template D - Type of the node's data
@@ -79,23 +79,23 @@ export interface AbstractTranscriberConstructor<
 export const AbstractTranscriber: AbstractTranscriberConstructor;
 
 /**
- * Options for the parser configuration in Implement()
+ * Options for the transformer configuration in Implement()
  * @template N - Type of the node's name
  * @template D - Type of the node's data
  */
-export interface ImplementOptionsParser<N = unknown, D = unknown> {
+export interface ImplementOptionsTransformer<N = unknown, D = unknown> {
 	/**
-	 * Parse a provider node into a name value.
+	 * Transform a provider node into a name value.
 	 * @param node - The provider node to extract a name from
-	 * @returns The parsed name
+	 * @returns The transformed name
 	 */
 	name: (node: unknown) => N;
 
 	/**
-	 * Parse a provider node into a data value.
+	 * Transform a provider node into a data value.
 	 * @param node - The provider node to extract data from
-	 * @param name - The parsed name of the node
-	 * @returns The parsed data
+	 * @param name - The transformed name of the node
+	 * @returns The transformed data
 	 */
 	data: (node: unknown, name: N) => D;
 }
@@ -113,8 +113,8 @@ export interface ImplementOptions<O = unknown, N = unknown, D = unknown> {
 	/** The ProviderConstructor to use for traversal */
 	provider: AbstractProviderConstructor<O>;
 
-	/** Parser functions for extracting name and data */
-	parser: ImplementOptionsParser<N, D>;
+	/** Transformer functions for extracting name and data */
+	transformer: ImplementOptionsTransformer<N, D>;
 }
 
 /**
@@ -124,7 +124,7 @@ export interface ImplementOptions<O = unknown, N = unknown, D = unknown> {
  * @template N - Type of the node's name
  * @template D - Type of the node's data
  * @param options - Configuration for node, provider, and
- * parser
+ * transformer
  * @returns A new transcriber constructor class
  * @throws {TypeError} If options or any required property is
  * invalid

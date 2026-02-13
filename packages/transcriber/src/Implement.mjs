@@ -29,7 +29,7 @@ function normalizeOptions(options) {
 		const {
 			node: _node,
 			provider: _provider,
-			parser: _parser,
+			transformer: _transformer,
 		} = options;
 
 		if (isNodeConstructor(_node)) {
@@ -44,27 +44,27 @@ function normalizeOptions(options) {
 			ThrowTypeError('args[0].provider', 'ProviderConstructor');
 		}
 
-		if (isPlainObject(_parser)) {
-			final.options.parser = {};
+		if (isPlainObject(_transformer)) {
+			final.options.transformer = {};
 
 			const {
 				name: _name,
 				data: _data,
-			} = _parser;
+			} = _transformer;
 
 			if (typeof _name === 'function') {
-				final.options.parser.name = _name;
+				final.options.transformer.name = _name;
 			} else {
-				ThrowTypeError('args[0].parser.name', 'function');
+				ThrowTypeError('args[0].transformer.name', 'function');
 			}
 
 			if (typeof _data === 'function') {
-				final.options.parser.data = _data;
+				final.options.transformer.data = _data;
 			} else {
-				ThrowTypeError('args[0].parser.data', 'function');
+				ThrowTypeError('args[0].transformer.data', 'function');
 			}
 		} else {
-			ThrowTypeError('args[0].parser', 'plain object');
+			ThrowTypeError('args[0].transformer', 'plain object');
 		}
 	} else {
 		ThrowTypeError('args[0] as options', 'plain object');
@@ -77,12 +77,12 @@ export function Implement(options) {
 	const _options = normalizeOptions(options);
 
 	return SCP(class ImplementedTranscriber extends Abstract {
-		[_I.PARSE.NAME](node) {
-			return _options.parser.name(node);
+		[_I.TRANSFORM.NAME](node) {
+			return _options.transformer.name(node);
 		}
 
-		[_I.PARSE.DATA](node, name) {
-			return _options.parser.data(node, name);
+		[_I.TRANSFORM.DATA](node, name) {
+			return _options.transformer.data(node, name);
 		}
 
 		static [_S.CONSTRUCTOR.NODE] = _options.node;

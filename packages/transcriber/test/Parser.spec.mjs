@@ -9,11 +9,11 @@ import { _I, _S } from '../src/Symbol/index.mjs';
 
 function MockTranscriber(Node, Provider) {
 	class CustomTranscriber extends AbstractTranscriber {
-		[_I.PARSE.NAME](node) {
+		[_I.TRANSFORM.NAME](node) {
 			return node.name;
 		}
 
-		[_I.PARSE.DATA]() {
+		[_I.TRANSFORM.DATA]() {
 			return null;
 		}
 

@@ -28,8 +28,8 @@ export default Abstract(class Transcriber {
 			if (step.action === ACTION.ENTER) {
 				const child = new TargetNode();
 
-				child.name = await this[_I.PARSE.NAME](step.node);
-				child.data = await this[_I.PARSE.DATA](step.node, child.name);
+				child.name = await this[_I.TRANSFORM.NAME](step.node);
+				child.data = await this[_I.TRANSFORM.DATA](step.node, child.name);
 				trace.at(-1).appendChild(child);
 				trace.push(child);
 			}
@@ -51,8 +51,8 @@ export default Abstract(class Transcriber {
 	}
 }, ...[
 	Abstract({
-		[_I.PARSE.NAME]: M.Method().args(M.Any).returns(M.Any),
-		[_I.PARSE.DATA]: M.Method().args(M.Any, M.Any).returns(M.Any),
+		[_I.TRANSFORM.NAME]: M.Method().args(M.Any).returns(M.Any),
+		[_I.TRANSFORM.DATA]: M.Method().args(M.Any, M.Any).returns(M.Any),
 	}),
 	Abstract.Static({
 		[_S.CONSTRUCTOR.NODE]: Parser.ImplementedNodeConstructor,
