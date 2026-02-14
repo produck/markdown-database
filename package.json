@@ -25,6 +25,6 @@
 		"packages/cellulose/provider",
 		"packages/provider/fs-directory",
 		"packages/node/string-json",
-		"packages/linen"
+		"packages/linen/storage"
 	]
 }
