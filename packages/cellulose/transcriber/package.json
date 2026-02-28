@@ -28,6 +28,6 @@
 		"@produck/cellulose-node": "*",
 		"@produck/cellulose-provider": "*",
 		"@produck/es-abstract": "^0.3.1",
-		"@produck/type-error": "^0.1.2"
+		"@produck/type-error": "^0.1.3"
 	}
 }
