@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-
+import * as Ow from '@produck/ow';
 import { ThrowTypeError } from '@produck/type-error';
 import * as Provider from '@produck/cellulose-provider';
 
@@ -40,18 +40,18 @@ export default class FSDirectoryProvider extends Provider.Implement({
 	async *steps(pathname, provider) {
 		const {
 			[I.PATHNAME.VALID]: isValidPathname,
-			[I.PATHNAME.DESCRIPTION]: pathnameDescription
+			[I.PATHNAME.DESCRIPTION]: pathnameDescription,
 		} = provider;
 
 		const stat = await fs.promises.stat(pathname);
 
 		if (!stat.isDirectory()) {
-			throw new Error(`Stat of "${pathname}" MUST be a directory.`);
+			Ow.Error.Common(`Stat of "${pathname}" MUST be a directory.`);
 		}
 
 		yield *(async function *visit(origin) {
 			if (!(await isValidPathname(origin))) {
-				throw new Error(pathnameDescription);
+				Ow.Error.Common(pathnameDescription);
 			}
 
 			const step = provider.createStep({ origin });

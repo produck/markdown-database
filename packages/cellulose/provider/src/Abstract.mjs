@@ -1,3 +1,4 @@
+import * as Ow from '@produck/ow';
 import { ThrowTypeError, AssertionChecker } from '@produck/type-error';
 import Abstract, { Member as M } from '@produck/es-abstract';
 
@@ -41,7 +42,7 @@ export default Abstract(class CelluloseProvider {
 
 			if (action === ACTION.LEAVE) {
 				if (visiting.pop() !== step) {
-					throw new Error('Bad Implementation, NOT paired.');
+					Ow.Error.Common('Bad Implementation, NOT paired.');
 				}
 			}
 
@@ -49,7 +50,7 @@ export default Abstract(class CelluloseProvider {
 		}
 
 		if (visiting.length > 0) {
-			throw new Error('Bad Implementation, steps NOT leave.');
+			Ow.Error.Common('Bad Implementation, steps NOT leave.');
 		}
 	}
 

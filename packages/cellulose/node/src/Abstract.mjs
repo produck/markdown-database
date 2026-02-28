@@ -1,12 +1,9 @@
+import * as Ow from '@produck/ow';
 import { ThrowTypeError } from '@produck/type-error';
 import Abstract, { Member as M } from '@produck/es-abstract';
 
 import * as ACTION from './Action.mjs';
 import { I, S, _I, _S } from './Symbol/index.mjs';
-
-function ThrowError(message) {
-	throw new Error(message);
-}
 
 export default Abstract(class Node {
 	[I.CONSTRUCTOR] = Node;
@@ -36,14 +33,14 @@ export default Abstract(class Node {
 	[I.ASSERT.NOT_ANCESTOR](node) {
 		for (const parent of this.parents()) {
 			if (node === parent) {
-				ThrowError('The new child is an ancestor of the parent');
+				Ow.Error.Common('The new child is an ancestor of the parent');
 			}
 		}
 	}
 
 	[I.ASSERT.CHILD](node, role) {
 		if (node[I.PARENT] !== this) {
-			ThrowError(`The node ${role} is not a child of this node.`);
+			Ow.Error.Common(`The node ${role} is not a child of this node.`);
 		}
 	}
 
@@ -51,7 +48,7 @@ export default Abstract(class Node {
 		if (this[I.CHILD.HAS_NAME](node.name)) {
 			const readableName = this[_I.NAME.TO_STRING](node.name);
 
-			ThrowError(`A child named "${readableName}" already exists.`);
+			Ow.Error.Common(`A child named "${readableName}" already exists.`);
 		}
 	}
 
@@ -135,7 +132,7 @@ export default Abstract(class Node {
 			if (parent[I.CHILD.HAS_NAME](value)) {
 				const readableName = this[_I.NAME.TO_STRING](value);
 
-				ThrowError(`A sibling node named "${readableName}" already exists.`);
+				Ow.Error.Common(`A sibling node named "${readableName}" already exists.`);
 			}
 		}
 
