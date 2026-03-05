@@ -1,6 +1,6 @@
 import Abstract, { Member as M } from '@produck/es-abstract';
 
-import { _S } from './Symbol/index.mjs';
+import { _S } from './Symbol.mjs';
 
 export default Abstract(class LinenStorage {
 

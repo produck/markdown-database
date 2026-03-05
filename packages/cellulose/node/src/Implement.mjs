@@ -2,7 +2,7 @@ import { ThrowTypeError } from '@produck/type-error';
 import { SubConstructorProxy as SCP } from '@produck/es-abstract';
 
 import AbstractNode from './Abstract.mjs';
-import { _I, _S } from './Symbol/index.mjs';
+import { _I, _S } from './Symbol.mjs';
 
 function isPlainObject(value) {
 	if (typeof value !== 'object' || value === null) {

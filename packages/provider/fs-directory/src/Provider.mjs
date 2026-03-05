@@ -4,7 +4,7 @@ import * as Ow from '@produck/ow';
 import { ThrowTypeError } from '@produck/type-error';
 import * as Provider from '@produck/cellulose-provider';
 
-import { I } from './Symbol/index.mjs';
+import { I } from './Symbol.mjs';
 
 const READDIR_OPTIONS = {
 	withFileTypes: true,

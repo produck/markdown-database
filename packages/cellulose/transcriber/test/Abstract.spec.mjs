@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import { MockNode, MockProvider, TREE } from './mock.mjs';
 
 import AbstractTranscriber from '../src/Abstract.mjs';
-import { _I, _S } from '../src/Symbol/index.mjs';
+import { _I, _S } from '../src/Symbol.mjs';
 
 class TestTranscriber extends AbstractTranscriber {
 	[_I.TRANSFORM.NAME](node) {

@@ -4,7 +4,7 @@ import { isNodeConstructor } from '@produck/cellulose-node';
 import { isProviderConstructor } from '@produck/cellulose-provider';
 
 import Abstract from './Abstract.mjs';
-import { _I, _S } from './Symbol/index.mjs';
+import { _I, _S } from './Symbol.mjs';
 
 function isPlainObject(value) {
 	if (typeof value !== 'object' || value === null) {

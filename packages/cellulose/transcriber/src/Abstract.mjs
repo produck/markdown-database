@@ -2,7 +2,7 @@ import Abstract, { Member as M } from '@produck/es-abstract';
 import { ACTION } from '@produck/cellulose-provider';
 
 import * as Parser from './Parser.mjs';
-import { I, _I, _S } from './Symbol/index.mjs';
+import { I, _I, _S } from './Symbol.mjs';
 
 export default Abstract(class Transcriber {
 	[I.CONSTRUCTOR] = Transcriber;

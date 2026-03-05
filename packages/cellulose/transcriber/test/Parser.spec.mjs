@@ -5,7 +5,7 @@ import { SubConstructorProxy } from '@produck/es-abstract';
 import { MockNode, MockProvider } from './mock.mjs';
 
 import AbstractTranscriber from '../src/Abstract.mjs';
-import { _I, _S } from '../src/Symbol/index.mjs';
+import { _I, _S } from '../src/Symbol.mjs';
 
 function MockTranscriber(Node, Provider) {
 	class CustomTranscriber extends AbstractTranscriber {
