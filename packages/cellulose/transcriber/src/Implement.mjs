@@ -76,13 +76,18 @@ function normalizeOptions(options) {
 export function Implement(options) {
 	const _options = normalizeOptions(options);
 
+	const {
+		name: transformName,
+		data: transformData,
+	} = _options.transformer;
+
 	return SCP(class ImplementedTranscriber extends Abstract {
 		[_I.TRANSFORM.NAME](node) {
-			return _options.transformer.name(node);
+			return transformName(node, this);
 		}
 
 		[_I.TRANSFORM.DATA](node, name) {
-			return _options.transformer.data(node, name);
+			return transformData(node, name, this);
 		}
 
 		static [_S.CONSTRUCTOR.NODE] = _options.node;

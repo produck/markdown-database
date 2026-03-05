@@ -152,4 +152,42 @@ describe('::Implement()', () => {
 		assert.ok(received.length > 0);
 		assert.equal(received[0].name, 'root');
 	});
+
+	it('should pass transcriber to transformer.name.', async () => {
+		let receivedTranscriber = null;
+
+		const sample = FullOptions();
+
+		sample.transformer.name = (node, transcriber) => {
+			receivedTranscriber = transcriber;
+
+			return node.name;
+		};
+
+		const Transcriber = Implement(sample);
+		const transcriber = new Transcriber();
+
+		await transcriber.transcribe(TREE);
+
+		assert.equal(receivedTranscriber, transcriber);
+	});
+
+	it('should pass transcriber to transformer.data.', async () => {
+		let receivedTranscriber = null;
+
+		const sample = FullOptions();
+
+		sample.transformer.data = (node, name, transcriber) => {
+			receivedTranscriber = transcriber;
+
+			return null;
+		};
+
+		const Transcriber = Implement(sample);
+		const transcriber = new Transcriber();
+
+		await transcriber.transcribe(TREE);
+
+		assert.equal(receivedTranscriber, transcriber);
+	});
 });

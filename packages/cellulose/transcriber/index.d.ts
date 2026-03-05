@@ -56,7 +56,7 @@ export interface AbstractTranscriber<O = unknown, N = unknown, D = unknown> {
 	 * @param origin - The origin to transcribe from
 	 * @returns The root node of the transcribed tree
 	 */
-	transcribe(origin: O): Promise<Node<N, D>>;
+	transcribe(origin: O): Promise<Node<N, D> | null>;
 }
 
 /**
@@ -83,21 +83,23 @@ export const AbstractTranscriber: AbstractTranscriberConstructor;
  * @template N - Type of the node's name
  * @template D - Type of the node's data
  */
-export interface ImplementOptionsTransformer<N = unknown, D = unknown> {
+export interface ImplementOptionsTransformer<O = unknown, N = unknown, D = unknown> {
 	/**
 	 * Transform a provider node into a name value.
 	 * @param node - The provider node to extract a name from
+	 * @param transcriber - The transcriber instance
 	 * @returns The transformed name
 	 */
-	name: (node: unknown) => N;
+	name: (node: unknown, transcriber: AbstractTranscriber<O, N, D>) => N;
 
 	/**
 	 * Transform a provider node into a data value.
 	 * @param node - The provider node to extract data from
 	 * @param name - The transformed name of the node
+	 * @param transcriber - The transcriber instance
 	 * @returns The transformed data
 	 */
-	data: (node: unknown, name: N) => D;
+	data: (node: unknown, name: N, transcriber: AbstractTranscriber<O, N, D>) => D;
 }
 
 /**
@@ -114,7 +116,7 @@ export interface ImplementOptions<O = unknown, N = unknown, D = unknown> {
 	provider: AbstractProviderConstructor<O>;
 
 	/** Transformer functions for extracting name and data */
-	transformer: ImplementOptionsTransformer<N, D>;
+	transformer: ImplementOptionsTransformer<O, N, D>;
 }
 
 /**
