@@ -41,6 +41,7 @@ export default class FSDirectoryProvider extends Provider.Implement({
 		const {
 			[I.PATHNAME.VALID]: isValidPathname,
 			[I.PATHNAME.DESCRIPTION]: pathnameDescription,
+			[I.PATHNAME.IGNORE.IS]: isIgnoredPathname,
 		} = provider;
 
 		const stat = await fs.promises.stat(pathname);
@@ -50,8 +51,12 @@ export default class FSDirectoryProvider extends Provider.Implement({
 		}
 
 		yield *(async function *visit(origin) {
-			if (!(await isValidPathname(origin))) {
+			if (!await isValidPathname(origin)) {
 				Ow.Error.Common(pathnameDescription);
+			}
+
+			if (!await isIgnoredPathname(origin)) {
+				return;
 			}
 
 			const step = provider.createStep({ origin });
@@ -72,10 +77,11 @@ export default class FSDirectoryProvider extends Provider.Implement({
 }) {
 	[I.PATHNAME.VALID] = () => true;
 	[I.PATHNAME.DESCRIPTION] = 'CustomPathname';
+	[I.PATHNAME.IGNORE.IS] = () => true;
 
-	definePathname(validator, description) {
+	defineValidPathname(validator, description) {
 		if (typeof validator !== 'function') {
-			ThrowTypeError('args[0] as validator', '(value: unknown) => true');
+			ThrowTypeError('args[0] as validator', '(value) => Promise<boolean>');
 		}
 
 		if (typeof description !== 'string') {
@@ -84,5 +90,13 @@ export default class FSDirectoryProvider extends Provider.Implement({
 
 		this[I.PATHNAME.VALID] = validator;
 		this[I.PATHNAME.DESCRIPTION] = description;
+	}
+
+	defineIgnorePathname(isIgnored) {
+		if (typeof isIgnored !== 'function') {
+			ThrowTypeError('args[0] as isIgnored', '(value) => Promise<boolean>');
+		}
+
+		this[I.PATHNAME.IGNORE.IS] = isIgnored;
 	}
 };

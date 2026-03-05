@@ -74,7 +74,7 @@ describe('::FSDirectoryProvider()', () => {
 
 		it('should throw error when pathname validation fails with async false', async () => {
 			const provider = new FSDirectoryProvider();
-			provider.definePathname(async () => false, 'ValidationFailed');
+			provider.defineValidPathname(async () => false, 'ValidationFailed');
 
 			await assert.rejects(
 				async () => {
@@ -91,7 +91,7 @@ describe('::FSDirectoryProvider()', () => {
 
 		it('should accept all paths when validator returns async true', async () => {
 			const provider = new FSDirectoryProvider();
-			provider.definePathname(async () => true, 'AllowAll');
+			provider.defineValidPathname(async () => true, 'AllowAll');
 
 			const visited = [];
 
@@ -156,14 +156,14 @@ describe('::FSDirectoryProvider()', () => {
 		});
 	});
 
-	describe('.definePathname()', () => {
+	describe('.defineValidPathname()', () => {
 		it('should accept valid validator function and description string', () => {
 			const provider = new FSDirectoryProvider();
 			const validator = (value) => typeof value === 'string';
 			const description = 'CustomPathname';
 
 			assert.doesNotThrow(() => {
-				provider.definePathname(validator, description);
+				provider.defineValidPathname(validator, description);
 			});
 		});
 
@@ -171,7 +171,7 @@ describe('::FSDirectoryProvider()', () => {
 			const provider = new FSDirectoryProvider();
 
 			assert.throws(
-				() => provider.definePathname('not-a-function', 'description'),
+				() => provider.defineValidPathname('not-a-function', 'description'),
 				{
 					name: 'TypeError',
 					message: /args\[0\] as validator/,
@@ -184,7 +184,7 @@ describe('::FSDirectoryProvider()', () => {
 			const validator = () => true;
 
 			assert.throws(
-				() => provider.definePathname(validator, 123),
+				() => provider.defineValidPathname(validator, 123),
 				{
 					name: 'TypeError',
 					message: /args\[1\] as description/,
@@ -196,7 +196,7 @@ describe('::FSDirectoryProvider()', () => {
 			const provider = new FSDirectoryProvider();
 			const validator = () => true;
 
-			assert.throws(() => provider.definePathname(validator, null), {
+			assert.throws(() => provider.defineValidPathname(validator, null), {
 				name: 'TypeError',
 				message: /args\[1\] as description/,
 			});
@@ -206,10 +206,44 @@ describe('::FSDirectoryProvider()', () => {
 			const provider = new FSDirectoryProvider();
 
 			assert.throws(
-				() => provider.definePathname(null, 123),
+				() => provider.defineValidPathname(null, 123),
 				{
 					name: 'TypeError',
 					message: /args\[0\] as validator/,
+				},
+			);
+		});
+	});
+
+	describe('.defineIgnorePathname()', () => {
+		it('should accept valid isIgnored function', () => {
+			const provider = new FSDirectoryProvider();
+
+			assert.doesNotThrow(() => {
+				provider.defineIgnorePathname(async () => true);
+			});
+		});
+
+		it('should throw TypeError when isIgnored is not a function', () => {
+			const provider = new FSDirectoryProvider();
+
+			assert.throws(
+				() => provider.defineIgnorePathname('not-a-function'),
+				{
+					name: 'TypeError',
+					message: /args\[0\] as isIgnored/,
+				},
+			);
+		});
+
+		it('should throw TypeError when isIgnored is null', () => {
+			const provider = new FSDirectoryProvider();
+
+			assert.throws(
+				() => provider.defineIgnorePathname(null),
+				{
+					name: 'TypeError',
+					message: /args\[0\] as isIgnored/,
 				},
 			);
 		});
