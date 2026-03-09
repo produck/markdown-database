@@ -1,9 +1,11 @@
-export const I = Object.freeze({
-	PATHNAME: Object.freeze({
+import { deepFreeze } from '@produck/deep-freeze-enumerable';
+
+export const I = deepFreeze({
+	PATHNAME: {
 		VALID: Symbol('.isValidPathname'),
 		DESCRIPTION: Symbol('.pathnameDescription'),
-		IGNORE: Object.freeze({
+		IGNORE: {
 			IS: Symbol('.isIgnored'),
-		}),
-	}),
+		},
+	},
 });

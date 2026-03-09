@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"@produck/cellulose-provider": "*",
+		"@produck/deep-freeze-enumerable": "^1.0.0",
 		"@produck/ow": "^0.2.2",
 		"@produck/type-error": "^0.1.4"
 	}

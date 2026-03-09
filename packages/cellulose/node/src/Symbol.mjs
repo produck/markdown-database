@@ -1,17 +1,19 @@
-export const I = Object.freeze({
-	ASSERT: Object.freeze({
+import { deepFreeze } from '@produck/deep-freeze-enumerable';
+
+export const I = deepFreeze({
+	ASSERT: {
 		NAME: Symbol('.#assertName()'),
 		DATA: Symbol('.#assertData()'),
 		NODE: Symbol('.#assertNode()'),
 		NOT_ANCESTOR: Symbol('.#assertNotAncestor()'),
 		UNIQUE_CHILD_NAME: Symbol('.#assertUniqueChildName()'),
 		CHILD: Symbol('.#assertChild()'),
-	}),
-	SIBLING: Object.freeze({
+	},
+	SIBLING: {
 		PREVIOUS: Symbol('.#previousSibling'),
 		NEXT: Symbol('.#nextSibling'),
-	}),
-	CHILD: Object.freeze({
+	},
+	CHILD: {
 		FIRST: Symbol('.#firstChild'),
 		LAST: Symbol('.#lastChild'),
 		APPEND: Symbol('.#appendChild()'),
@@ -19,11 +21,11 @@ export const I = Object.freeze({
 		INSERT: Symbol('.#insertBefore()'),
 		REPLACE: Symbol('.#replaceChild()'),
 		HAS_NAME: Symbol('.#childHasName()'),
-	}),
-	IS: Object.freeze({
+	},
+	IS: {
 		SAME: Symbol('.#isSame()'),
 		NAME_EQUAL: Symbol('.#isEqual()'),
-	}),
+	},
 	CONSTRUCTOR: Symbol('.#constructor'),
 	PARENT: Symbol('.#parent'),
 	NAME: Symbol('.#name'),
@@ -33,30 +35,30 @@ export const I = Object.freeze({
 	DETACH: Symbol('.#detach()'),
 });
 
-export const _I = Object.freeze({
-	NAME: Object.freeze({
+export const _I = deepFreeze({
+	NAME: {
 		INIT: Symbol('._initName()'),
 		EQUAL: Symbol('._nameEqual()'),
 		TO_STRING: Symbol('._nameToString()'),
 		CLONE: Symbol('._cloneName()'),
-	}),
-	DATA: Object.freeze({
+	},
+	DATA: {
 		INIT: Symbol('._initData()'),
 		CLONE: Symbol('._cloneData()'),
-	}),
+	},
 });
 
-export const _S = Object.freeze({
-	NAME: Object.freeze({
+export const _S = deepFreeze({
+	NAME: {
 		IS_VALID: Symbol('::_isValidName()'),
 		DESCRIPTION: Symbol('::_nameDescription'),
-	}),
-	DATA: Object.freeze({
+	},
+	DATA: {
 		IS_VALID: Symbol('::_isValidData'),
 		DESCRIPTION: Symbol('::_nameDescription'),
-	}),
+	},
 });
 
-export const S = Object.freeze({
+export const S = deepFreeze({
 	FLAG: Symbol('::flag'),
 });
