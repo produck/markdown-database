@@ -8,11 +8,13 @@ export class MockNode extends Node.Implement({
 		isValid: (value) => typeof value === 'string',
 		equal: (a, b) => a === b,
 		toString: (name) => name,
+		clone: (name) => name,
 	},
 	data: {
 		init: () => null,
 		description: 'any',
 		isValid: () => true,
+		clone: (data) => data,
 	},
 }) {
 	/** NO MEMBERS */
