@@ -96,6 +96,17 @@ describe('::Implement()', () => {
 		});
 	});
 
+	it('should throw if bad "args[0].name.clone".', () => {
+		const sample = FullOptions();
+
+		sample.name.clone = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].name.clone", one "function" expected.',
+		});
+	});
+
 	it('should throw if bad "args[0].data".', () => {
 		const sample = FullOptions();
 
@@ -137,6 +148,17 @@ describe('::Implement()', () => {
 		assert.throws(() => Implement(sample), {
 			name: 'TypeError',
 			message: 'Invalid "args[0].data.isValid", one "function" expected.',
+		});
+	});
+
+	it('should throw if bad "args[0].data.clone".', () => {
+		const sample = FullOptions();
+
+		sample.data.clone = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].data.clone", one "function" expected.',
 		});
 	});
 

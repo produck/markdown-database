@@ -102,6 +102,19 @@ describe('::FSDirectoryProvider()', () => {
 			// Should traverse successfully
 			assert.ok(visited.length > 0);
 		});
+
+		it('should return no steps when pathname is ignored', async () => {
+			const provider = new FSDirectoryProvider();
+			provider.defineIgnorePathname(async () => false);
+
+			const visited = [];
+
+			for await (const step of provider.seek(rootPathname)) {
+				visited.push(step);
+			}
+
+			assert.deepEqual(visited, []);
+		});
 	});
 
 	describe('.isOrigin()', () => {
