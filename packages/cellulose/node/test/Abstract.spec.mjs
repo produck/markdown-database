@@ -346,6 +346,120 @@ describe('::Node()', () => {
 		});
 	});
 
+	describe('.clone()', () => {
+		it('should throw if bad deep.', () => {
+			const node = new TestNode();
+
+			assert.throws(() => node.clone(null), {
+				name: 'TypeError',
+				message: 'Invalid "args[0] as deep", one "boolean" expected.',
+			});
+		});
+
+		it('should clone a leaf node.', () => {
+			const node = new TestNode();
+
+			node.name = 'foo';
+			node.data = 'bar';
+
+			const cloned = node.clone();
+
+			assert.notEqual(cloned, node);
+			assert.equal(cloned.name, 'foo');
+			assert.equal(cloned.data, 'bar');
+			assert.equal(cloned.parent, null);
+		});
+
+		it('should shallow clone by default.', () => {
+			const parent = new TestNode();
+			const child = new TestNode();
+
+			parent.name = 'parent';
+			child.name = 'child';
+			parent.appendChild(child);
+
+			const cloned = parent.clone();
+
+			assert.equal(cloned.name, 'parent');
+			assert.equal(cloned.hasChildNodes(), false);
+		});
+
+		it('should shallow clone with false.', () => {
+			const parent = new TestNode();
+			const child = new TestNode();
+
+			parent.name = 'parent';
+			child.name = 'child';
+			parent.appendChild(child);
+
+			const cloned = parent.clone(false);
+
+			assert.equal(cloned.name, 'parent');
+			assert.equal(cloned.hasChildNodes(), false);
+		});
+
+		it('should deep clone with children.', () => {
+			const root = new TestNode();
+			const a = new TestNode();
+			const b = new TestNode();
+
+			root.name = 'root';
+			a.name = 'a';
+			b.name = 'b';
+			root.appendChild(a);
+			root.appendChild(b);
+
+			const cloned = root.clone(true);
+
+			assert.notEqual(cloned, root);
+			assert.equal(cloned.name, 'root');
+			assert.equal(cloned.hasChildNodes(), true);
+			assert.notEqual(cloned.firstChild, a);
+			assert.notEqual(cloned.lastChild, b);
+			assert.equal(cloned.firstChild.name, 'a');
+			assert.equal(cloned.lastChild.name, 'b');
+			assert.equal(cloned.firstChild.parent, cloned);
+			assert.equal(cloned.lastChild.parent, cloned);
+		});
+
+		it('should deep clone recursively.', () => {
+			const root = new TestNode();
+			const child = new TestNode();
+			const grandchild = new TestNode();
+
+			root.name = 'root';
+			child.name = 'child';
+			grandchild.name = 'grandchild';
+			root.appendChild(child);
+			child.appendChild(grandchild);
+
+			const cloned = root.clone(true);
+
+			assert.equal(cloned.name, 'root');
+			assert.equal(cloned.firstChild.name, 'child');
+			assert.equal(cloned.firstChild.firstChild.name, 'grandchild');
+			assert.notEqual(cloned.firstChild, child);
+			assert.notEqual(cloned.firstChild.firstChild, grandchild);
+			assert.equal(cloned.firstChild.parent, cloned);
+			assert.equal(cloned.firstChild.firstChild.parent, cloned.firstChild);
+		});
+
+		it('should not affect the original tree.', () => {
+			const root = new TestNode();
+			const child = new TestNode();
+
+			root.name = 'root';
+			child.name = 'child';
+			root.appendChild(child);
+
+			const cloned = root.clone(true);
+
+			cloned.firstChild.name = 'modified';
+			assert.equal(child.name, 'child');
+			assert.equal(root.firstChild, child);
+		});
+	});
+
 	describe('.isSameNode()', () => {
 		it('should get true.', () => {
 			const a = new TestNode();

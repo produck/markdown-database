@@ -313,11 +313,21 @@ export default Abstract(class Node {
 		return this[I.CHILD.FIRST] !== null;
 	}
 
-	clone() {
+	clone(deep = false) {
+		if (typeof deep !== 'boolean') {
+			ThrowTypeError('args[0] as deep', 'boolean');
+		}
+
 		const node = new this[I.CONSTRUCTOR]();
 
 		node[I.NAME] = this[_I.NAME.CLONE](this[I.NAME]);
 		node[I.DATA] = this[_I.DATA.CLONE](this[I.DATA]);
+
+		if (deep) {
+			for (const child of this.children()) {
+				node[I.CHILD.APPEND](child.clone(true));
+			}
+		}
 
 		return node;
 	}
