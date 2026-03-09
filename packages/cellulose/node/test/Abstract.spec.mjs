@@ -18,8 +18,16 @@ class TestNode extends AbstractNode {
 		return name;
 	}
 
+	[_I.NAME.CLONE](name) {
+		return name;
+	}
+
 	[_I.DATA.INIT]() {
 		return null;
+	}
+
+	[_I.DATA.CLONE](data) {
+		return data;
 	}
 
 	static [_S.NAME.IS_VALID](value) {
@@ -377,8 +385,16 @@ describe('::Node()', () => {
 					return name;
 				}
 
+				[_I.NAME.CLONE](name) {
+					return name;
+				}
+
 				[_I.DATA.INIT]() {
 					return null;
+				}
+
+				[_I.DATA.CLONE](data) {
+					return data;
 				}
 
 				static [_S.NAME.IS_VALID](value) {
@@ -451,8 +467,16 @@ describe('::Node()', () => {
 					return name;
 				}
 
+				[_I.NAME.CLONE](name) {
+					return name;
+				}
+
 				[_I.DATA.INIT]() {
 					return null;
+				}
+
+				[_I.DATA.CLONE](data) {
+					return data;
 				}
 
 				static [_S.NAME.IS_VALID](value) {
@@ -505,8 +529,16 @@ describe('::Node()', () => {
 					return name;
 				}
 
+				[_I.NAME.CLONE](name) {
+					return name;
+				}
+
 				[_I.DATA.INIT]() {
 					return null;
+				}
+
+				[_I.DATA.CLONE](data) {
+					return data;
 				}
 
 				static [_S.NAME.IS_VALID](value) {

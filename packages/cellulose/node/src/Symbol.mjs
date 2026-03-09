@@ -38,9 +38,11 @@ export const _I = Object.freeze({
 		INIT: Symbol('._initName()'),
 		EQUAL: Symbol('._nameEqual()'),
 		TO_STRING: Symbol('._nameToString()'),
+		CLONE: Symbol('._cloneName()'),
 	}),
 	DATA: Object.freeze({
 		INIT: Symbol('._initData()'),
+		CLONE: Symbol('._cloneData()'),
 	}),
 });
 

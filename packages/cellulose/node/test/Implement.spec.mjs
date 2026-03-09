@@ -11,11 +11,13 @@ function FullOptions() {
 			isValid: (v) => v !== 'bad',
 			equal: (a, b) => a === b,
 			toString: (v) => v,
+			clone: (v) => v,
 		},
 		data: {
 			init: () => null,
 			description: '',
 			isValid: (v) => v !== 'bad',
+			clone: (v) => v,
 		},
 	};
 }

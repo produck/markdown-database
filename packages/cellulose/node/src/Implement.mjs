@@ -67,6 +67,14 @@ function normalizeOptions(options) {
 			} else {
 				ThrowTypeError('args[0].name.toString', 'function');
 			}
+
+			const { clone: _clone } = _name;
+
+			if (typeof _clone === 'function') {
+				name.clone = _clone;
+			} else {
+				ThrowTypeError('args[0].name.clone', 'function');
+			}
 		} else {
 			ThrowTypeError('args[0].name', 'plain object');
 		}
@@ -97,6 +105,14 @@ function normalizeOptions(options) {
 			} else {
 				ThrowTypeError('args[0].data.isValid', 'function');
 			}
+
+			const { clone: _clone } = _data;
+
+			if (typeof _clone === 'function') {
+				data.clone = _clone;
+			} else {
+				ThrowTypeError('args[0].data.clone', 'function');
+			}
 		} else {
 			ThrowTypeError('args[0].data', 'plain object');
 		}
@@ -125,6 +141,14 @@ export function Implement(options) {
 
 		[_I.DATA.INIT]() {
 			return _options.data.init();
+		}
+
+		[_I.NAME.CLONE](name) {
+			return _options.name.clone(name);
+		}
+
+		[_I.DATA.CLONE](data) {
+			return _options.data.clone(data);
 		}
 
 		static [_S.NAME.IS_VALID](value) {

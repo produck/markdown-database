@@ -313,6 +313,15 @@ export default Abstract(class Node {
 		return this[I.CHILD.FIRST] !== null;
 	}
 
+	clone() {
+		const node = new this[I.CONSTRUCTOR]();
+
+		node[I.NAME] = this[_I.NAME.CLONE](this[I.NAME]);
+		node[I.DATA] = this[_I.DATA.CLONE](this[I.DATA]);
+
+		return node;
+	}
+
 	static get description() {
 		return {
 			name: this[_S.NAME.DESCRIPTION],
@@ -338,9 +347,11 @@ export default Abstract(class Node {
 		[_I.NAME.INIT]: M.Method().returns(M.Any),
 		[_I.NAME.EQUAL]: M.Method().returns(M.Boolean),
 		[_I.NAME.TO_STRING]: M.Method().returns(M.String),
+		[_I.NAME.CLONE]: M.Method().returns(M.Any),
 	}),
 	Abstract({
 		[_I.DATA.INIT]: M.Method().returns(M.Any),
+		[_I.DATA.CLONE]: M.Method().returns(M.Any),
 	}),
 	Abstract.Static({
 		[_S.NAME.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
