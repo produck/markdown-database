@@ -157,4 +157,94 @@ describe('::StringJsonNode()', () => {
 			}
 		});
 	});
+
+	describe('.clone()', () => {
+		it('should clone a leaf node.', () => {
+			const node = new StringJsonNode();
+
+			node.name = 'foo';
+			node.data = { a: 1 };
+
+			const cloned = node.clone();
+
+			assert.notEqual(cloned, node);
+			assert.equal(cloned.name, 'foo');
+			assert.deepEqual(cloned.data, { a: 1 });
+			assert.equal(cloned.parent, null);
+		});
+
+		it('should deep copy data on clone.', () => {
+			const node = new StringJsonNode();
+			const data = { nested: { value: 42 }, list: [1, 2, 3] };
+
+			node.data = data;
+
+			const cloned = node.clone();
+
+			assert.deepEqual(cloned.data, data);
+			assert.notEqual(cloned.data, node.data);
+			assert.notEqual(cloned.data.nested, node.data.nested);
+			assert.notEqual(cloned.data.list, node.data.list);
+		});
+
+		it('should shallow clone by default.', () => {
+			const parent = new StringJsonNode();
+			const child = new StringJsonNode();
+
+			parent.name = 'parent';
+			child.name = 'child';
+			parent.appendChild(child);
+
+			const cloned = parent.clone();
+
+			assert.equal(cloned.name, 'parent');
+			assert.equal(cloned.hasChildNodes(), false);
+		});
+
+		it('should deep clone with children.', () => {
+			const root = new StringJsonNode();
+			const a = new StringJsonNode();
+			const b = new StringJsonNode();
+
+			root.name = 'root';
+			a.name = 'a';
+			a.data = { x: 1 };
+			b.name = 'b';
+			b.data = [1, 2];
+			root.appendChild(a);
+			root.appendChild(b);
+
+			const cloned = root.clone(true);
+
+			assert.notEqual(cloned, root);
+			assert.equal(cloned.firstChild.name, 'a');
+			assert.deepEqual(cloned.firstChild.data, { x: 1 });
+			assert.notEqual(cloned.firstChild.data, a.data);
+			assert.equal(cloned.lastChild.name, 'b');
+			assert.deepEqual(cloned.lastChild.data, [1, 2]);
+			assert.notEqual(cloned.lastChild.data, b.data);
+		});
+
+		it('should clone null data.', () => {
+			const node = new StringJsonNode();
+
+			node.name = 'test';
+
+			const cloned = node.clone();
+
+			assert.equal(cloned.data, null);
+		});
+
+		it('should clone primitive data.', () => {
+			const node = new StringJsonNode();
+
+			for (const v of [42, 'hello', true, false]) {
+				node.data = v;
+
+				const cloned = node.clone();
+
+				assert.equal(cloned.data, v);
+			}
+		});
+	});
 });

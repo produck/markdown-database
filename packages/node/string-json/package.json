@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"@produck/cellulose-node": "*",
+		"@produck/json-copier": "^1.0.0",
 		"@produck/type-error": "^0.1.4",
 		"is-plain-obj": "^4.1.0"
 	},

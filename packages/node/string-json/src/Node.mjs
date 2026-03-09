@@ -1,5 +1,6 @@
-import { Implement } from '@produck/cellulose-node';
 import isPlainObj from 'is-plain-obj';
+import * as JsonCopier from '@produck/json-copier';
+import { Implement } from '@produck/cellulose-node';
 
 function isValidName(value) {
 	return typeof value === 'string';
@@ -36,11 +37,13 @@ export default class StringJsonNode extends Implement({
 		isValid: isValidName,
 		equal: (a, b) => a === b,
 		toString: (name) => name,
+		clone: (name) => name,
 	},
 	data: {
 		init: () => null,
 		description: 'JsonValue',
 		isValid: isValidData,
+		clone: (data) => JsonCopier.copy(data),
 	},
 }) {
 	/** NO MEMBERS */
