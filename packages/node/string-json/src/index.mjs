@@ -1,1 +1,1 @@
-export { default } from './Node.mjs';
+export { default, BaseStringJsonNode as Base } from './Node.mjs';

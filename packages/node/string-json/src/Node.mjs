@@ -30,7 +30,7 @@ function isValidData(value) {
 	return false;
 }
 
-export default class StringJsonNode extends Implement({
+export const BaseStringJsonNode = Implement({
 	name: {
 		init: () => '',
 		description: 'string',
@@ -45,6 +45,8 @@ export default class StringJsonNode extends Implement({
 		isValid: isValidData,
 		clone: (data) => JsonCopier.copy(data),
 	},
-}) {
+});
+
+export default class StringJsonNode extends BaseStringJsonNode {
 	/** NO MEMBERS */
 }

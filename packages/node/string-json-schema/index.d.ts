@@ -14,6 +14,11 @@ interface StringJsonSchemaNodeConstructor extends StringJsonNodeConstructor {
 }
 
 /**
+ * Base abstract StringJsonSchemaNode constructor.
+ */
+export const Abstract: StringJsonSchemaNodeConstructor;
+
+/**
  * Creates a StringJsonSchemaNode class bound to a specific
  * Ajv instance.
  * @param ajv - Optional Ajv instance; a default one is

@@ -28,14 +28,20 @@ export namespace _I {
 
 		/** Symbol for name to string conversion method */
 		export const TO_STRING: unique symbol;
+
+		/** Symbol for name clone method */
+		export const CLONE: unique symbol;
 	}
 
 	/**
-	 * Data property initialization
+	 * Data property initialization and operations
 	 */
 	export namespace DATA {
 		/** Symbol for data initialization method */
 		export const INIT: unique symbol;
+
+		/** Symbol for data clone method */
+		export const CLONE: unique symbol;
 	}
 }
 
@@ -205,6 +211,9 @@ export interface ImplementOptionsName<N = unknown> {
 
 	/** Serialization function to convert name to string */
 	toString: (value: N) => string;
+
+	/** Clone function to create a deep copy of a name */
+	clone: (value: N) => N;
 }
 
 /**
@@ -220,6 +229,9 @@ export interface ImplementOptionsData<D = unknown> {
 
 	/** Validator function to check if value is valid data */
 	isValid: (value: unknown) => boolean;
+
+	/** Clone function to create a deep copy of data */
+	clone: (value: D) => D;
 }
 
 /**
@@ -260,7 +272,8 @@ export interface ImplementOptions<
  *   data: {
  *     init: () => null,
  *     description: 'Node data',
- *     isValid: (v) => v === null || typeof v === 'object'
+ *     isValid: (v) => v === null || typeof v === 'object',
+ *     clone: (v) => structuredClone(v)
  *   }
  * });
  */

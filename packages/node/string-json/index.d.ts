@@ -3,9 +3,14 @@ import { NodeConstructor } from '@produck/cellulose-node';
 export type StringJsonNodeConstructor = NodeConstructor<string, unknown>;
 
 /**
- * String JSON serializable node representation.
- * The name is a string identifier.
- * The data is a JSON value composed of null, booleans, numbers, strings, arrays, and plain objects.
+ * Base abstract StringJsonNode constructor created by
+ * cellulose-node Implement().
+ */
+export const Base: StringJsonNodeConstructor;
+
+/**
+ * Default StringJsonNode class for string-named,
+ * JSON-valued nodes.
  */
 declare const StringJsonNode: StringJsonNodeConstructor;
 
