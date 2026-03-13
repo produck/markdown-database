@@ -84,6 +84,9 @@ const _S_NAME_IS_VALID = Symbol('::_isValidName()');
 const _S_NAME_DESCRIPTION = Symbol('::_nameDescription');
 const _S_DATA_IS_VALID = Symbol('::_isValidData');
 const _S_DATA_DESCRIPTION = Symbol('::_nameDescription');
+const _S_IMPLEMENTATION_NAME = Symbol('::_implementationName');
+const _S_IMPLEMENTATION_VERSION = Symbol('::_implementationVersion');
+const _S_IMPLEMENTATION_DESCRIPTION = Symbol('::_implementationDescription');
 
 export const _S = deepFreeze({
 	NAME: {
@@ -93,6 +96,11 @@ export const _S = deepFreeze({
 	DATA: {
 		IS_VALID: _S_DATA_IS_VALID,
 		DESCRIPTION: _S_DATA_DESCRIPTION,
+	},
+	IMPLEMENTATION: {
+		NAME: _S_IMPLEMENTATION_NAME,
+		VERSION: _S_IMPLEMENTATION_VERSION,
+		DESCRIPTION: _S_IMPLEMENTATION_DESCRIPTION,
 	},
 });
 

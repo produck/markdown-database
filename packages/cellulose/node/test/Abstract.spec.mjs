@@ -45,6 +45,18 @@ class TestNode extends AbstractNode {
 	static get [_S.DATA.DESCRIPTION]() {
 		return 'PlainObject';
 	}
+
+	static get [_S.IMPLEMENTATION.NAME]() {
+		return 'TestNode';
+	}
+
+	static get [_S.IMPLEMENTATION.VERSION]() {
+		return '0.0.0';
+	}
+
+	static get [_S.IMPLEMENTATION.DESCRIPTION]() {
+		return 'A test node.';
+	}
 }
 
 describe('::Node()', () => {
@@ -84,11 +96,16 @@ describe('::Node()', () => {
 		});
 	});
 
-	describe('::description', () => {
+	describe('::meta', () => {
 		it('should get model.', () => {
-			assert.deepEqual(TestNode.description, {
-				name: 'string',
-				data: 'PlainObject',
+			assert.deepEqual(TestNode.meta, {
+				name: 'TestNode',
+				version: '0.0.0',
+				description: 'A test node.',
+				node: {
+					name: 'string',
+					data: 'PlainObject',
+				},
 			});
 		});
 	});

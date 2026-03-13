@@ -332,10 +332,15 @@ export default Abstract(class Node {
 		return node;
 	}
 
-	static get description() {
+	static get meta() {
 		return {
-			name: this[_S.NAME.DESCRIPTION],
-			data: this[_S.DATA.DESCRIPTION],
+			name: this[_S.IMPLEMENTATION.NAME],
+			version: this[_S.IMPLEMENTATION.VERSION],
+			description: this[_S.IMPLEMENTATION.DESCRIPTION],
+			node: {
+				name: this[_S.NAME.DESCRIPTION],
+				data: this[_S.DATA.DESCRIPTION],
+			},
 		};
 	}
 
@@ -368,6 +373,9 @@ export default Abstract(class Node {
 		[_S.NAME.DESCRIPTION]: M.String,
 		[_S.DATA.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
 		[_S.DATA.DESCRIPTION]: M.String,
+		[_S.IMPLEMENTATION.NAME]: M.String,
+		[_S.IMPLEMENTATION.VERSION]: M.String,
+		[_S.IMPLEMENTATION.DESCRIPTION]: M.String,
 	}),
 ]);
 

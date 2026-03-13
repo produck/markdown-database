@@ -70,6 +70,20 @@ export namespace _S {
 		/** Symbol for data property description */
 		export const DESCRIPTION: unique symbol;
 	}
+
+	/**
+	 * Implementation metadata
+	 */
+	export namespace IMPLEMENTATION {
+		/** Symbol for implementation name */
+		export const NAME: unique symbol;
+
+		/** Symbol for implementation version */
+		export const VERSION: unique symbol;
+
+		/** Symbol for implementation description */
+		export const DESCRIPTION: unique symbol;
+	}
 }
 
 /**
@@ -187,8 +201,27 @@ export interface Node<N = unknown, D = unknown> {
  * @template D - Type of the node's data
  */
 export interface NodeConstructor<N = unknown, D = unknown> {
-	/** Type guard to check if value is a Node instance */
 	new (): Node<N, D>;
+
+	/** Check if value is a Node instance */
+	isNode(value: unknown): value is Node<N, D>;
+
+	/** Check if value is a valid name */
+	isValidName(value: unknown): boolean;
+
+	/** Check if value is valid data */
+	isValidData(value: unknown): boolean;
+
+	/** Get implementation metadata */
+	readonly meta: {
+		readonly name: string;
+		readonly version: string;
+		readonly description: string;
+		readonly node: {
+			readonly name: string;
+			readonly data: string;
+		};
+	};
 }
 
 /**

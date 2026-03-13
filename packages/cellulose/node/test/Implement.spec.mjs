@@ -5,6 +5,11 @@ import { Implement } from '../src/Implement.mjs';
 
 function FullOptions() {
 	return {
+		meta: {
+			name: '',
+			version: '',
+			description: '',
+		},
 		name: {
 			init: () => {},
 			description: '',
@@ -27,6 +32,50 @@ describe('::Implement()', () => {
 		assert.throws(() => Implement(null), {
 			name: 'TypeError',
 			message: 'Invalid "args[0]", one "plain object" expected.',
+		});
+	});
+
+	it('should throw if bad "args[0].meta".', () => {
+		const sample = FullOptions();
+
+		sample.meta = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta", one "plain object" expected.',
+		});
+	});
+
+	it('should throw if bad "args[0].meta.name".', () => {
+		const sample = FullOptions();
+
+		sample.meta.name = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta.name", one "string" expected.',
+		});
+	});
+
+	it('should throw if bad "args[0].meta.version".', () => {
+		const sample = FullOptions();
+
+		sample.meta.version = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta.version", one "string" expected.',
+		});
+	});
+
+	it('should throw if bad "args[0].meta.description".', () => {
+		const sample = FullOptions();
+
+		sample.meta.description = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta.description", one "string" expected.',
 		});
 	});
 
