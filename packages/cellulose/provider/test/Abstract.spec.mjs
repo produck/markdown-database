@@ -60,6 +60,18 @@ class MockNodeProvider extends AbstractProvider {
 	static [_S.NODE.IS_VALID](value) {
 		return typeof value === 'string';
 	}
+
+	static get [_S.IMPLEMENTATION.NAME]() {
+		return 'MockNodeProvider';
+	}
+
+	static get [_S.IMPLEMENTATION.VERSION]() {
+		return '0.0.0';
+	}
+
+	static get [_S.IMPLEMENTATION.DESCRIPTION]() {
+		return 'A mock provider.';
+	}
 }
 
 describe('::AbstractNodeProvider()', () => {
@@ -89,11 +101,16 @@ describe('::AbstractNodeProvider()', () => {
 		});
 	});
 
-	describe('::description', () => {
-		it('should get a description.', () => {
-			assert.deepEqual(MockNodeProvider.description, {
-				node: 'node',
-				origin: 'string',
+	describe('::meta', () => {
+		it('should get meta.', () => {
+			assert.deepEqual(MockNodeProvider.meta, {
+				name: 'MockNodeProvider',
+				version: '0.0.0',
+				description: 'A mock provider.',
+				provider: {
+					node: 'node',
+					origin: 'string',
+				},
 			});
 		});
 	});

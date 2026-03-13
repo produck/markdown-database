@@ -5,6 +5,11 @@ import { Implement } from '../src/Implement.mjs';
 
 function FullOptions() {
 	return {
+		meta: {
+			name: '',
+			version: '',
+			description: '',
+		},
 		node: {
 			isValid: () => true,
 			description: 'node',
@@ -26,6 +31,50 @@ describe('::Implement()', () => {
 		assert.throws(() => Implement(null), {
 			name: 'TypeError',
 			message: 'Invalid "args[0] as options", one "plain object" expected.',
+		});
+	});
+
+	it('should throw if bad args[0].meta', () => {
+		const sample = FullOptions();
+
+		sample.meta = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta", one "plain object" expected.',
+		});
+	});
+
+	it('should throw if bad args[0].meta.name', () => {
+		const sample = FullOptions();
+
+		sample.meta.name = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta.name", one "string" expected.',
+		});
+	});
+
+	it('should throw if bad args[0].meta.version', () => {
+		const sample = FullOptions();
+
+		sample.meta.version = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta.version", one "string" expected.',
+		});
+	});
+
+	it('should throw if bad args[0].meta.description', () => {
+		const sample = FullOptions();
+
+		sample.meta.description = [];
+
+		assert.throws(() => Implement(sample), {
+			name: 'TypeError',
+			message: 'Invalid "args[0].meta.description", one "string" expected.',
 		});
 	});
 
@@ -125,6 +174,28 @@ describe('::Implement()', () => {
 		assert.throws(() => provider.createStep(null), {
 			name: 'TypeError',
 			message: 'Invalid "args[0] as node", one "MY_NODE" expected.',
+		});
+	});
+
+	it('should get correct meta from Implement', () => {
+		const options = FullOptions();
+
+		options.meta.name = 'TestProvider';
+		options.meta.version = '1.2.3';
+		options.meta.description = 'A test provider.';
+		options.origin.description = 'MY_ORIGIN';
+		options.node.description = 'MY_NODE';
+
+		const Provider = Implement(options);
+
+		assert.deepEqual(Provider.meta, {
+			name: 'TestProvider',
+			version: '1.2.3',
+			description: 'A test provider.',
+			provider: {
+				origin: 'MY_ORIGIN',
+				node: 'MY_NODE',
+			},
 		});
 	});
 

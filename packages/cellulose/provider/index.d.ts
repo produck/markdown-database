@@ -65,6 +65,18 @@ export namespace _S {
 		/** Symbol for node description */
 		export const DESCRIPTION: unique symbol;
 	}
+
+	/** Static symbols for implementation metadata */
+	export namespace IMPLEMENTATION {
+		/** Symbol for implementation name */
+		export const NAME: unique symbol;
+
+		/** Symbol for implementation version */
+		export const VERSION: unique symbol;
+
+		/** Symbol for implementation description */
+		export const DESCRIPTION: unique symbol;
+	}
 }
 
 /**
@@ -117,12 +129,16 @@ export interface AbstractProviderConstructor<O = unknown, N = unknown> {
 	isNode(value: unknown): boolean;
 
 	/**
-	 * Get descriptions of origin and node types
-	 * @returns Object with origin and node description strings
+	 * Get implementation metadata
 	 */
-	description: {
-		origin: string;
-		node: string;
+	readonly meta: {
+		readonly name: string;
+		readonly version: string;
+		readonly description: string;
+		readonly provider: {
+			readonly origin: string;
+			readonly node: string;
+		};
 	};
 }
 
@@ -143,6 +159,20 @@ export function isProviderConstructor(
  * @template N - Type of the nodes being visited
  */
 export interface ImplementOptions<O = unknown, N = unknown> {
+	/**
+	 * Implementation metadata
+	 */
+	meta: {
+		/** Implementation name */
+		name: string;
+
+		/** Implementation version */
+		version: string;
+
+		/** Implementation description */
+		description: string;
+	};
+
 	/**
 	 * Configuration for origin validation and description
 	 */

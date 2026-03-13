@@ -72,10 +72,15 @@ export default Abstract(class CelluloseProvider {
 		return this[_S.NODE.IS_VALID](value);
 	}
 
-	static get description() {
+	static get meta() {
 		return {
-			origin: this[_S.ORIGIN.DESCRIPTION],
-			node: this[_S.NODE.DESCRIPTION],
+			name: this[_S.IMPLEMENTATION.NAME],
+			version: this[_S.IMPLEMENTATION.VERSION],
+			description: this[_S.IMPLEMENTATION.DESCRIPTION],
+			provider: {
+				origin: this[_S.ORIGIN.DESCRIPTION],
+				node: this[_S.NODE.DESCRIPTION],
+			},
 		};
 	}
 
@@ -90,6 +95,9 @@ export default Abstract(class CelluloseProvider {
 		[_S.ORIGIN.DESCRIPTION]: M.String,
 		[_S.NODE.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),
 		[_S.NODE.DESCRIPTION]: M.String,
+		[_S.IMPLEMENTATION.NAME]: M.String,
+		[_S.IMPLEMENTATION.VERSION]: M.String,
+		[_S.IMPLEMENTATION.DESCRIPTION]: M.String,
 	}),
 ]);
 

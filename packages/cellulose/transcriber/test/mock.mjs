@@ -2,6 +2,11 @@ import * as Node from '@produck/cellulose-node';
 import * as Provider from '@produck/cellulose-provider';
 
 export class MockNode extends Node.Implement({
+	meta: {
+		name: 'MockNode',
+		version: '0.0.0',
+		description: 'A mock node.',
+	},
 	name: {
 		init: () => '',
 		description: 'string',
@@ -47,6 +52,11 @@ export const TREE = {
 };
 
 export class MockProvider extends Provider.Implement({
+	meta: {
+		name: 'MockProvider',
+		version: '0.0.0',
+		description: 'A mock provider.',
+	},
 	origin: {
 		isValid: (value) => typeof value === 'object' && value !== null,
 		description: 'TreeNode',

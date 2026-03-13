@@ -18,6 +18,9 @@ const _S_ORIGIN_IS_VALID = Symbol('::_isValidOrigin()');
 const _S_ORIGIN_DESCRIPTION = Symbol('::_originDescription');
 const _S_NODE_IS_VALID = Symbol('::_isValidNode()');
 const _S_NODE_DESCRIPTION = Symbol('::_nodeDescription');
+const _S_IMPLEMENTATION_NAME = Symbol('::_implementationName');
+const _S_IMPLEMENTATION_VERSION = Symbol('::_implementationVersion');
+const _S_IMPLEMENTATION_DESCRIPTION = Symbol('::_implementationDescription');
 
 export const _S = deepFreeze({
 	ORIGIN: {
@@ -27,6 +30,11 @@ export const _S = deepFreeze({
 	NODE: {
 		IS_VALID: _S_NODE_IS_VALID,
 		DESCRIPTION: _S_NODE_DESCRIPTION,
+	},
+	IMPLEMENTATION: {
+		NAME: _S_IMPLEMENTATION_NAME,
+		VERSION: _S_IMPLEMENTATION_VERSION,
+		DESCRIPTION: _S_IMPLEMENTATION_DESCRIPTION,
 	},
 });
 

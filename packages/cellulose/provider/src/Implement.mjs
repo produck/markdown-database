@@ -25,10 +25,41 @@ function normalizeOptions(options) {
 		final.options = {};
 
 		const {
+			meta: _meta,
 			origin: _origin,
 			node: _node,
 			steps: _steps,
 		} = options;
+
+		if (isPlainObject(_meta)) {
+			final.options.meta = {};
+
+			const {
+				name: _metaName,
+				version: _metaVersion,
+				description: _metaDescription,
+			} = _meta;
+
+			if (typeof _metaName === 'string') {
+				final.options.meta.name = _metaName;
+			} else {
+				ThrowTypeError('args[0].meta.name', 'string');
+			}
+
+			if (typeof _metaVersion === 'string') {
+				final.options.meta.version = _metaVersion;
+			} else {
+				ThrowTypeError('args[0].meta.version', 'string');
+			}
+
+			if (typeof _metaDescription === 'string') {
+				final.options.meta.description = _metaDescription;
+			} else {
+				ThrowTypeError('args[0].meta.description', 'string');
+			}
+		} else {
+			ThrowTypeError('args[0].meta', 'plain object');
+		}
 
 		if (isPlainObject(_origin)) {
 			final.options.origin = {};
@@ -110,6 +141,18 @@ export function Implement(options) {
 
 		static [_S.NODE.IS_VALID](value) {
 			return _options.node.isValid(value);
+		}
+
+		static get [_S.IMPLEMENTATION.NAME]() {
+			return _options.meta.name;
+		}
+
+		static get [_S.IMPLEMENTATION.VERSION]() {
+			return _options.meta.version;
+		}
+
+		static get [_S.IMPLEMENTATION.DESCRIPTION]() {
+			return _options.meta.description;
 		}
 	});
 }

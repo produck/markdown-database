@@ -211,6 +211,28 @@ describe('::Implement()', () => {
 		});
 	});
 
+	it('should get correct meta from Implement.', () => {
+		const options = FullOptions();
+
+		options.meta.name = 'TestNode';
+		options.meta.version = '1.2.3';
+		options.meta.description = 'A test node.';
+		options.name.description = 'string';
+		options.data.description = 'JsonValue';
+
+		const Node = Implement(options);
+
+		assert.deepEqual(Node.meta, {
+			name: 'TestNode',
+			version: '1.2.3',
+			description: 'A test node.',
+			node: {
+				name: 'string',
+				data: 'JsonValue',
+			},
+		});
+	});
+
 	it('should get ImplementedNode.', () => {
 		const FullOptionsNode = Implement(FullOptions());
 
