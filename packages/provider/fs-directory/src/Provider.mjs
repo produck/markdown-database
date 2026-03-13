@@ -5,6 +5,7 @@ import { ThrowTypeError } from '@produck/type-error';
 import * as Provider from '@produck/cellulose-provider';
 
 import { I } from './Symbol.mjs';
+import * as PACKAGE from './package.gen.mjs';
 
 const READDIR_OPTIONS = {
 	withFileTypes: true,
@@ -29,6 +30,11 @@ function isValidNode(value) {
 }
 
 export default class FSDirectoryProvider extends Provider.Implement({
+	meta: {
+		name: PACKAGE.NAME,
+		version: PACKAGE.VERSION,
+		description: PACKAGE.DESCRIPTION,
+	},
 	origin: {
 		isValid: isValidOrigin,
 		description: 'AbsolutePathnameString',

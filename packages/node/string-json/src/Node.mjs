@@ -1,6 +1,8 @@
 import isPlainObj from 'is-plain-obj';
 import * as JsonCopier from '@produck/json-copier';
-import { Implement } from '@produck/cellulose-node';
+import * as Node from '@produck/cellulose-node';
+
+import * as PACKAGE from './package.gen.mjs';
 
 function isValidName(value) {
 	return typeof value === 'string';
@@ -30,7 +32,12 @@ function isValidData(value) {
 	return false;
 }
 
-export const BaseStringJsonNode = Implement({
+export const BaseStringJsonNode = Node.Implement({
+	meta: {
+		name: PACKAGE.NAME,
+		version: PACKAGE.VERSION,
+		description: PACKAGE.DESCRIPTION,
+	},
 	name: {
 		init: () => '',
 		description: 'string',
