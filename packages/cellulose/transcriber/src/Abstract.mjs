@@ -2,7 +2,7 @@ import Abstract, { Member as M } from '@produck/es-abstract';
 import { ACTION } from '@produck/cellulose-provider';
 
 import * as Parser from './Parser.mjs';
-import { I, _I, _S } from './Symbol.mjs';
+import { I, _I, S, _S } from './Symbol.mjs';
 
 export default Abstract(class Transcriber {
 	[I.CONSTRUCTOR] = Transcriber;
@@ -49,13 +49,19 @@ export default Abstract(class Transcriber {
 	static get Provider() {
 		return this[_S.CONSTRUCTOR.PROVIDER];
 	}
+
+	static [S.FLAG] = true;
 }, ...[
 	Abstract({
 		[_I.TRANSFORM.NAME]: M.Method().args(M.Any).returns(M.Any),
 		[_I.TRANSFORM.DATA]: M.Method().args(M.Any, M.Any).returns(M.Any),
 	}),
 	Abstract.Static({
-		[_S.CONSTRUCTOR.NODE]: Parser.ImplementedNodeConstructor,
-		[_S.CONSTRUCTOR.PROVIDER]: Parser.ImplementedProviderConstructor,
+		[_S.CONSTRUCTOR.NODE]: Parser.NodeConstructor,
+		[_S.CONSTRUCTOR.PROVIDER]: Parser.ProviderConstructor,
 	}),
 ]);
+
+export function isTranscriberConstructor(value) {
+	return typeof value === 'function' && S.FLAG in value;
+}

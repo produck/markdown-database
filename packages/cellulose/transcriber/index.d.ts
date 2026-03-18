@@ -134,3 +134,38 @@ export interface ImplementOptions<O = unknown, N = unknown, D = unknown> {
 export function Implement<O = unknown, N = unknown, D = unknown>(
 	options: ImplementOptions<O, N, D>,
 ): AbstractTranscriberConstructor<O, N, D>;
+
+/**
+ * Parser namespace with validation functions for constructors.
+ */
+export namespace Parser {
+	/**
+	 * Validate and return a NodeConstructor, or throw TypeError.
+	 * @param value - The value to validate
+	 * @returns The validated NodeConstructor
+	 * @throws {TypeError} If value is not a valid NodeConstructor
+	 */
+	export function NodeConstructor<N = unknown, D = unknown>(
+		value: unknown,
+	): import('@produck/cellulose-node').NodeConstructor<N, D>;
+
+	/**
+	 * Validate and return a ProviderConstructor, or throw TypeError.
+	 * @param value - The value to validate
+	 * @returns The validated ProviderConstructor
+	 * @throws {TypeError} If value is not a valid ProviderConstructor
+	 */
+	export function ProviderConstructor<O = unknown>(
+		value: unknown,
+	): AbstractProviderConstructor<O>;
+}
+
+/**
+ * Check whether a value is a transcriber constructor
+ * (created by `Implement()` or extending `AbstractTranscriber`).
+ * @param value - The value to check
+ * @returns `true` if value is a transcriber constructor
+ */
+export function isTranscriberConstructor(
+	value: unknown,
+): value is AbstractTranscriberConstructor;

@@ -360,13 +360,13 @@ export default Abstract(class Node {
 }, ...[
 	Abstract({
 		[_I.NAME.INIT]: M.Method().returns(M.Any),
-		[_I.NAME.EQUAL]: M.Method().returns(M.Boolean),
-		[_I.NAME.TO_STRING]: M.Method().returns(M.String),
-		[_I.NAME.CLONE]: M.Method().returns(M.Any),
+		[_I.NAME.EQUAL]: M.Method().args(M.Any, M.Any).returns(M.Boolean),
+		[_I.NAME.TO_STRING]: M.Method().args(M.Any).returns(M.String),
+		[_I.NAME.CLONE]: M.Method().args(M.Any).returns(M.Any),
 	}),
 	Abstract({
 		[_I.DATA.INIT]: M.Method().returns(M.Any),
-		[_I.DATA.CLONE]: M.Method().returns(M.Any),
+		[_I.DATA.CLONE]: M.Method().args(M.Any).returns(M.Any),
 	}),
 	Abstract.Static({
 		[_S.NAME.IS_VALID]: M.Method().args(M.Any).returns(M.Boolean),

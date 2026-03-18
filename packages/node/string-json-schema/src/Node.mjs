@@ -27,7 +27,7 @@ export default Abstract(class StringJsonSchemaNode extends StringJsonNode {
 		return PACKAGE.VERSION;
 	}
 
-	static get [Node._S.IMPLEMENTATION.NAME]() {
+	static get [Node._S.IMPLEMENTATION.DESCRIPTION]() {
 		return PACKAGE.DESCRIPTION;
 	}
 }, ...[

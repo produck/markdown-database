@@ -94,6 +94,26 @@ describe('::implement()', () => {
 	});
 });
 
+describe('.meta', () => {
+	it('should return implementation name.', () => {
+		const Node = Implement();
+
+		assert.equal(Node.meta.name, '@produck/cellulose-node-string-json-schema');
+	});
+
+	it('should return implementation version.', () => {
+		const Node = Implement();
+
+		assert.equal(Node.meta.version, '0.0.0');
+	});
+
+	it('should return implementation description.', () => {
+		const Node = Implement();
+
+		assert.equal(Node.meta.description, '');
+	});
+});
+
 describe('::default export', () => {
 	it('should be a valid Node class', () => {
 		const node = new DefaultNode();

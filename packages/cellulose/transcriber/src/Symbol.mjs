@@ -31,3 +31,9 @@ export const _S = deepFreeze({
 		PROVIDER: _S_CONSTRUCTOR_PROVIDER,
 	},
 });
+
+const S_FLAG = Symbol('::flag');
+
+export const S = deepFreeze({
+	FLAG: S_FLAG,
+});
