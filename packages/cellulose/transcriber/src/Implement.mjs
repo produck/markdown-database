@@ -1,7 +1,8 @@
+import { isSubConstructor } from '@produck/is-sub-constructor';
 import { ThrowTypeError } from '@produck/type-error';
 import { SubConstructorProxy as SCP } from '@produck/es-abstract';
-import { isNodeConstructor } from '@produck/cellulose-node';
-import { isProviderConstructor } from '@produck/cellulose-provider';
+import { AbstractNode } from '@produck/cellulose-node';
+import { AbstractProvider } from '@produck/cellulose-provider';
 
 import Abstract from './Abstract.mjs';
 import { _I, _S } from './Symbol.mjs';
@@ -32,13 +33,13 @@ function normalizeOptions(options) {
 			transformer: _transformer,
 		} = options;
 
-		if (isNodeConstructor(_node)) {
+		if (isSubConstructor(_node, AbstractNode)) {
 			final.options.node = _node;
 		} else {
 			ThrowTypeError('args[0].node', 'NodeConstructor');
 		}
 
-		if (isProviderConstructor(_provider)) {
+		if (isSubConstructor(_provider, AbstractProvider)) {
 			final.options.provider = _provider;
 		} else {
 			ThrowTypeError('args[0].provider', 'ProviderConstructor');

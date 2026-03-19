@@ -4,7 +4,7 @@ import Abstract, { Member as M } from '@produck/es-abstract';
 
 import * as ACTION from './Action.mjs';
 import { Step, isStep, $I } from './Step.mjs';
-import { I, _I, _S, S } from './Symbol.mjs';
+import { I, _I, _S } from './Symbol.mjs';
 
 const Assert = {
 	Step: AssertionChecker(isStep, 'Step'),
@@ -83,8 +83,6 @@ export default Abstract(class CelluloseProvider {
 			},
 		};
 	}
-
-	static [S.FLAG] = true;
 },
 ...[
 	Abstract({
@@ -100,7 +98,3 @@ export default Abstract(class CelluloseProvider {
 		[_S.IMPLEMENTATION.DESCRIPTION]: M.String,
 	}),
 ]);
-
-export function isProviderConstructor(value) {
-	return typeof value === 'function' && S.FLAG in value;
-}

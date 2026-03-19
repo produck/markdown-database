@@ -2,7 +2,6 @@ import * as assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import Ajv from 'ajv';
 
-import StringJsonSchemaNode from '../src/Node.mjs';
 import { Implement } from '../src/Implement.mjs';
 import DefaultNode from '../src/index.mjs';
 

@@ -145,15 +145,6 @@ export interface AbstractProviderConstructor<O = unknown, N = unknown> {
 export const AbstractProvider: AbstractProviderConstructor;
 
 /**
- * Check if a value is a valid provider constructor
- * @param value - The value to check
- * @returns true if value is a provider constructor created by Implement()
- */
-export function isProviderConstructor(
-	value: unknown,
-): value is AbstractProviderConstructor;
-
-/**
  * Options accepted by `Implement()`.
  * @template O - Type of the origin for traversal
  * @template N - Type of the nodes being visited

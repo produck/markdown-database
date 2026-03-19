@@ -3,7 +3,7 @@ import { ThrowTypeError } from '@produck/type-error';
 import Abstract, { Member as M } from '@produck/es-abstract';
 
 import * as ACTION from './Action.mjs';
-import { I, S, _I, _S } from './Symbol.mjs';
+import { I, _I, _S } from './Symbol.mjs';
 
 export default Abstract(class Node {
 	[I.CONSTRUCTOR] = Node;
@@ -355,8 +355,6 @@ export default Abstract(class Node {
 	static isValidData(value) {
 		return this[_S.DATA.IS_VALID](value);
 	}
-
-	static [S.FLAG] = true;
 }, ...[
 	Abstract({
 		[_I.NAME.INIT]: M.Method().returns(M.Any),
@@ -378,7 +376,3 @@ export default Abstract(class Node {
 		[_S.IMPLEMENTATION.DESCRIPTION]: M.String,
 	}),
 ]);
-
-export function isNodeConstructor(value) {
-	return typeof value === 'function' && S.FLAG in value;
-}

@@ -159,13 +159,3 @@ export namespace Parser {
 		value: unknown,
 	): AbstractProviderConstructor<O>;
 }
-
-/**
- * Check whether a value is a transcriber constructor
- * (created by `Implement()` or extending `AbstractTranscriber`).
- * @param value - The value to check
- * @returns `true` if value is a transcriber constructor
- */
-export function isTranscriberConstructor(
-	value: unknown,
-): value is AbstractTranscriberConstructor;

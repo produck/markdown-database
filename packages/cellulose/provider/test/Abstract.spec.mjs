@@ -3,7 +3,6 @@ import { describe, it } from 'node:test';
 
 import {
 	AbstractProvider, _I, _S,
-	isProviderConstructor,
 } from '../src/index.mjs';
 
 const root = {
@@ -237,49 +236,5 @@ describe('::AbstractNodeProvider()', () => {
 				message: 'Bad Implementation, steps NOT leave.',
 			});
 		});
-	});
-});
-
-describe('::isProviderConstructor()', () => {
-	it('should return true for AbstractProvider.', () => {
-		assert.equal(isProviderConstructor(AbstractProvider), true);
-	});
-
-	it('should return false for null.', () => {
-		assert.equal(isProviderConstructor(null), false);
-	});
-
-	it('should return false for undefined.', () => {
-		assert.equal(isProviderConstructor(undefined), false);
-	});
-
-	it('should return false for plain object.', () => {
-		assert.equal(isProviderConstructor({}), false);
-	});
-
-	it('should return false for plain function.', () => {
-		assert.equal(
-			isProviderConstructor(() => {}),
-			false,
-		);
-	});
-
-	it('should return false for string.', () => {
-		assert.equal(isProviderConstructor('Provider'), false);
-	});
-
-	it('should return true for custom provider subclass.', () => {
-		class CustomProvider extends AbstractProvider {}
-
-		assert.equal(isProviderConstructor(CustomProvider), true);
-	});
-
-	it('should return true for multiple custom provider subclasses.', () => {
-		class CustomProvider1 extends AbstractProvider {}
-
-		class CustomProvider2 extends AbstractProvider {}
-
-		assert.equal(isProviderConstructor(CustomProvider1), true);
-		assert.equal(isProviderConstructor(CustomProvider2), true);
 	});
 });

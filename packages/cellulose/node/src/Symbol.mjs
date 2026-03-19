@@ -103,9 +103,3 @@ export const _S = deepFreeze({
 		DESCRIPTION: _S_IMPLEMENTATION_DESCRIPTION,
 	},
 });
-
-const S_FLAG = Symbol('::flag');
-
-export const S = deepFreeze({
-	FLAG: S_FLAG,
-});

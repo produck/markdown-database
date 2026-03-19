@@ -3,8 +3,7 @@ import { describe, it } from 'node:test';
 
 import { MockNode, MockProvider, TREE } from './mock.mjs';
 
-import AbstractTranscriber, { isTranscriberConstructor } from '../src/Abstract.mjs';
-import { Implement } from '../src/Implement.mjs';
+import AbstractTranscriber from '../src/Abstract.mjs';
 import { _I, _S } from '../src/Symbol.mjs';
 
 class TestTranscriber extends AbstractTranscriber {
@@ -87,37 +86,4 @@ describe('::Transcriber()', () => {
 			assert.equal(TestTranscriber.Provider, MockProvider);
 		});
 	});
-});
-
-describe('isTranscriberConstructor()', () => {
-	it('should return true for a manually extended class.', () => {
-		assert.equal(isTranscriberConstructor(TestTranscriber), true);
-	});
-
-	it('should return true for an Implement()-created class.', () => {
-		const Transcriber = Implement({
-			node: MockNode,
-			provider: MockProvider,
-			transformer: {
-				name: (node) => node.name,
-				data: () => null,
-			},
-		});
-
-		assert.equal(isTranscriberConstructor(Transcriber), true);
-	});
-
-	for (const [title, value] of [
-		['a plain function', function () {}],
-		['a regular class', class Foo {}],
-		['null', null],
-		['undefined', undefined],
-		['a number', 42],
-		['a string', 'foo'],
-		['a plain object', {}],
-	]) {
-		it(`should return false for ${title}.`, () => {
-			assert.equal(isTranscriberConstructor(value), false);
-		});
-	}
 });

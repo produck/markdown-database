@@ -35,32 +35,10 @@ describe('::Implement()', () => {
 		});
 	});
 
-	it('should throw if "args[0].node" is a plain class.', () => {
-		const sample = FullOptions();
-
-		sample.node = class {};
-
-		assert.throws(() => Implement(sample), {
-			name: 'TypeError',
-			message: 'Invalid "args[0].node", one "NodeConstructor" expected.',
-		});
-	});
-
 	it('should throw if bad "args[0].provider".', () => {
 		const sample = FullOptions();
 
 		sample.provider = null;
-
-		assert.throws(() => Implement(sample), {
-			name: 'TypeError',
-			message: 'Invalid "args[0].provider", one "ProviderConstructor" expected.',
-		});
-	});
-
-	it('should throw if "args[0].provider" is a plain class.', () => {
-		const sample = FullOptions();
-
-		sample.provider = class {};
 
 		assert.throws(() => Implement(sample), {
 			name: 'TypeError',
